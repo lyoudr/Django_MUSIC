@@ -8,7 +8,8 @@ class LocalStaorge(FileSystemStorage):
 
 
 class RemoteStorage:
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(location = '/music/media/')
 
 
 def select_storage():

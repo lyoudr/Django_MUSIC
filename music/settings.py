@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
-
+import os
 import environ
 
 env = environ.Env(
@@ -36,7 +36,7 @@ SECRET_KEY = '@o*b@#vc)w!it$c=#%!i()07u328%--za65c7uyk6r3jdh6lv@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
 
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:4200'
@@ -93,14 +93,14 @@ WSGI_APPLICATION = 'music.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'music',
-        'USER': 'ann',
-        'PASSWORD': 'GxXynskDj134yi7P',
-        'HOST': '127.0.0.1',
+        'NAME': os.environ.get('DB_NAME'), # 'music',
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'), # docker-compose 
+            # Use RDS => 'music.cfdhrxxmggjd.ap-northeast-1.rds.amazonaws.com',
         'PORT': '5432',
         'AUTOMIC_REQUESTS': True
     }
@@ -157,3 +157,6 @@ STATIC_ROOT = '/Users/ann.ke/Ann/music_server/music/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/Users/ann.ke/Ann/music_server/music/media/'
 
+# RDS 
+# master user name : ann
+# master password : GxXynskDj134yi7P

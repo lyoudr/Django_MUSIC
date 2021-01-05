@@ -1,0 +1,50 @@
+version : '3.8'
+
+services :
+  # 1. web server
+  nginx :
+    image : nginx
+    volumes:
+      - ./docker/nginx/nginx_default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/uwsgi/uwsgi_params:/etc/nginx/uwsgi_params
+      - ./static:/tmp/static
+    depends_on:
+      - ann_server
+    ports: 
+      - 80:80
+      - 443:443
+
+  # 2. database
+  postgres_db :
+    image : postgres:12.5
+    environment: 
+      - POSTGRES_DB=music
+      - POSTGRES_USER=ann
+      - POSTGRES_PASSWORD=GxXynskDj134yi7P
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test : ["CMD", "pg_isready", "--dbname", "music", "--host", "postgres_db", "-U", "ann"]
+      timeout: 5s
+      retries : 5
+
+  # 3. server
+  ann_server:
+    build :
+      context : .
+      dockerfile: ./docker/config/Dockerfile
+    environment: 
+      - DB_HOST=postgres_db
+      - DB_NAME=music
+      - DB_USER=ann
+      - DB_PASSWORD=GxXynskDj134yi7P
+    depends_on:
+      - postgres_db
+    restart : always
+    ports : 
+      - 5000:5000
+      - 3200:3200
+
+
+  
