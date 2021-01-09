@@ -36,7 +36,7 @@ SECRET_KEY = '@o*b@#vc)w!it$c=#%!i()07u328%--za65c7uyk6r3jdh6lv@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'ec2-3-112-188-17.ap-northeast-1.compute.amazonaws.com']
 
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:4200'
