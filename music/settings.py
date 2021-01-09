@@ -21,7 +21,7 @@ env = environ.Env(
 # reading .env file
 environ.Env.read_env()
 
-ENV = env('ENV', default = 'local').lower()
+ENV = os.environ.get('ENV').lower()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -155,7 +155,7 @@ STATIC_ROOT = '/Users/ann.ke/Ann/music_server/music/static/'
 
 # Media static file
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/Users/ann.ke/Ann/music_server/music/media/'
+MEDIA_ROOT = '/Users/ann.ke/Ann/music_storage/'
 
 # RDS 
 # master user name : ann

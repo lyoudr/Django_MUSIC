@@ -3,7 +3,7 @@ version : '3.8'
 services :
   # 1. web server
   nginx :
-    image : nginx
+    image : lyoudr/music_web:latest
     volumes:
       - ./docker/nginx/nginx_default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/uwsgi/uwsgi_params:/etc/nginx/uwsgi_params
@@ -34,7 +34,8 @@ services :
     build :
       context : .
       dockerfile: ./docker/config/Dockerfile
-    environment: 
+    environment:
+      - ENV=prod 
       - DB_HOST=postgres_db
       - DB_NAME=music
       - DB_USER=ann

@@ -7,9 +7,9 @@ class LocalStaorge(FileSystemStorage):
         super().__init__(location = settings.MEDIA_ROOT)
 
 
-class RemoteStorage:
+class RemoteStorage(FileSystemStorage):
     def __init__(self, *args, **kwargs):
-        super().__init__(location = '/music/media/')
+        super().__init__(location = '/tmp/media/') # need to put to cloud
 
 
 def select_storage():
