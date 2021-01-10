@@ -149,9 +149,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
+# Django static files
 STATIC_URL = '/static/'
-STATIC_ROOT = '/Users/ann.ke/Ann/music_server/music/static/'
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 # Media static file
 MEDIA_URL = '/media/'

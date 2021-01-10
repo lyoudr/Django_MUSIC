@@ -36,6 +36,7 @@ services :
       dockerfile: ./docker/config/Dockerfile
     environment:
       - ENV=prod 
+      - STATIC_ROOT=/music/static/
       - DB_HOST=postgres_db
       - DB_NAME=music
       - DB_USER=ann

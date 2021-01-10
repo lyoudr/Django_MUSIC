@@ -10,7 +10,6 @@ COPY ./docker/config/db.json /music/db.json
 RUN pip install -r requirements.txt
 RUN pip install uwsgi
 RUN python manage.py collectstatic --noinput
-COPY ./static /music/static
 RUN ["chmod", "+x", "/music/entrypoint.sh"]
 EXPOSE 5000 3200
 
