@@ -36,7 +36,7 @@ class BlogSection(models.Model):
         ('V', 'video')
     ))
     text = models.TextField(null = True)
-    photo = models.FileField(upload_to = 'blog_photos', storage = select_storage)
+    photo = models.FileField(upload_to = 'blog_photos', storage = select_storage, null = True)
     video = models.CharField(max_length = 255, null = True)
 
     def __str__(self):

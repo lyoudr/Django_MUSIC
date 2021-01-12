@@ -25,6 +25,9 @@ from rest_framework.parsers import (
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+import boto3
+import os
+
 ### Blog View
 class BlogClassView(GenericAPIView):
     queryset = BlogClass.objects.all()
@@ -281,10 +284,8 @@ class BlogPostManageView(GenericAPIView):
         ]
     )
     def post(self, request, *args, **kwargs):
-        print('request.data is =>', request.data)
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid(raise_exception=True):
-            print('valid')
             serializer.save()
         return Response(data = serializer.data, status = status.HTTP_200_OK)
     
@@ -350,6 +351,16 @@ class BlogPostManageView(GenericAPIView):
     def delete(self, request, *args, **kwargs):
         post_id = request.GET.get('id') 
         post = self.get_queryset().get(pk = post_id)
+        
+        # delete files saved in S3 bucket
+        key_list = [post.photo.name, post.music_sheet.name]
+        try:
+            s3 = boto3.resource('s3')
+            for key in key_list:
+                s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), key).delete()
+        except Exception as error:
+            raise error
+
         post.delete()
         return Response(data = f'delete blog post id {post_id} successfully', status = status.HTTP_200_OK)
 
@@ -391,21 +402,21 @@ class BlogSectionView(GenericAPIView):
                 in_ = openapi.IN_FORM,
                 description = 'text content',
                 type = openapi.TYPE_STRING,
-                required = True
+                default = None
             ),
             openapi.Parameter(
                 'photo',
                 in_ = openapi.IN_FORM,
                 description = 'photo file',
                 type = openapi.TYPE_FILE,
-                required = True
+                default = None
             ),
             openapi.Parameter(
                 'video',
                 in_ = openapi.IN_FORM,
                 description = 'video file',
                 type = openapi.TYPE_STRING,
-                required = True
+                default = None
             ),
             openapi.Parameter(
                 description= '''
@@ -532,6 +543,15 @@ class BlogSectionView(GenericAPIView):
     def delete(self, request, *args, **kwargs):
         section_id = request.GET.get('section_id')
         section_to_delete = self.get_queryset().get(pk = section_id)
+        
+        # delete files saved in S3 bucket
+        if section_to_delete.post_type == 'photo':
+            try :
+                s3 = boto3.resource('s3')
+                s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), section_to_delete.photo.name).delete()
+            except Exception as error:
+                raise error
+        
         section_to_delete.delete()
         return Response(data = f'delete blog section {section_id} successfully', status = status.HTTP_200_OK)
 

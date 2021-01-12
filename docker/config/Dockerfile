@@ -11,6 +11,6 @@ RUN pip install -r requirements.txt
 RUN pip install uwsgi
 RUN python manage.py collectstatic --noinput
 RUN ["chmod", "+x", "/music/entrypoint.sh"]
-EXPOSE 5000 3200
+EXPOSE 5000
 
 ENTRYPOINT [ "/music/entrypoint.sh" ]

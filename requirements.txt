@@ -16,3 +16,7 @@ django-cors-headers==3.6.0
 
 # envrionment variable
 django-environ==0.4.5
+
+# s3 storage
+boto3==1.16.51
+django-storages==1.11.1

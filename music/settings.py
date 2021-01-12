@@ -52,7 +52,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders', # allow different origin request
+    # swagger
     'drf_yasg',
+    # storage
+    'storages',
+    # app
     'login',
     'blog',
 
@@ -160,3 +164,10 @@ MEDIA_ROOT = '/Users/ann.ke/Ann/music_storage/'
 # RDS 
 # master user name : ann
 # master password : GxXynskDj134yi7P
+
+
+# S3 storage
+# below is the access key and secret access key of IAM user "for-s3"
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
