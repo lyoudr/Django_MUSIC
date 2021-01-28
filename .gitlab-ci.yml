@@ -5,7 +5,7 @@ stages :
 deploy :
   stage : deploy
   script :
-    - ssh ubuntu@ec2-3-112-188-17.ap-northeast-1.compute.amazonaws.com <<EOT -i ~/.ssh/music_web.pem
+    - ssh ubuntu@ec2-3-112-188-17.ap-northeast-1.compute.amazonaws.com <<EOT -i /Users/ann.ke/.ssh/music_web.pem
     - cd music_server
     - git checkout -- .
     - git clean -fd # Remove untracked files
