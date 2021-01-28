@@ -3,3 +3,4 @@ media
 static
 postgres_data
 *.pyc
+builds/
