@@ -1,3 +1,5 @@
 *.sqlite3
 media
 static
+postgres_data
+*.pyc

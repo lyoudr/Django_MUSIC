@@ -318,7 +318,8 @@ class BlogPostManageView(GenericAPIView):
         post_to_update = self.get_queryset().get(pk = post_id)
         serializer = self.serializer_class(
             post_to_update,
-            data = request.data
+            data = request.data,
+            partial = True
         )
         serializer.is_valid(raise_exception = True)
         serializer.save()
@@ -341,6 +342,7 @@ class BlogPostManageView(GenericAPIView):
                 This is a HTTP Basic authentication => https://en.wikipedia.org/wiki/Basic_access_authentication
                 1. from base64 import b64encode
                 2. fill this field with => Basic b64encode(b"username:password").decode("utf-8")
+                3. Basic YW5uOmFubjEyMw==
                 ''',
                 name='Authorization',
                 in_=openapi.IN_HEADER,
@@ -402,21 +404,24 @@ class BlogSectionView(GenericAPIView):
                 in_ = openapi.IN_FORM,
                 description = 'text content',
                 type = openapi.TYPE_STRING,
-                default = None
+                allowEmptyValue = True,
+                required = True
             ),
             openapi.Parameter(
                 'photo',
                 in_ = openapi.IN_FORM,
                 description = 'photo file',
                 type = openapi.TYPE_FILE,
-                default = None
+                allowEmptyValue = True,
+                required = True
             ),
             openapi.Parameter(
                 'video',
                 in_ = openapi.IN_FORM,
                 description = 'video file',
                 type = openapi.TYPE_STRING,
-                default = None
+                allowEmptyValue = True,
+                required = True
             ),
             openapi.Parameter(
                 description= '''
@@ -510,7 +515,7 @@ class BlogSectionView(GenericAPIView):
         serializer = self.serializer_class(
             section_to_update,
             data = request.data,
-            partial = False
+            partial = True
         )
         serializer.is_valid(raise_exception = True)
         serializer.save()

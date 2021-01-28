@@ -36,7 +36,7 @@ SECRET_KEY = '@o*b@#vc)w!it$c=#%!i()07u328%--za65c7uyk6r3jdh6lv@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'ec2-3-112-188-17.ap-northeast-1.compute.amazonaws.com']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'ec2-3-112-188-17.ap-northeast-1.compute.amazonaws.com', 'localhost']
 
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:4200'
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -103,8 +104,10 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME'), # 'music',
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'), # docker-compose 
+        'HOST': 
+            os.environ.get('DB_HOST'), # docker-compose 
             # Use RDS => 'music.cfdhrxxmggjd.ap-northeast-1.rds.amazonaws.com',
+            # 'music.cfdhrxxmggjd.ap-northeast-1.rds.amazonaws.com',
         'PORT': '5432',
         'AUTOMIC_REQUESTS': True
     }
@@ -140,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 

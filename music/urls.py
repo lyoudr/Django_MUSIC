@@ -19,14 +19,23 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.urls import path, include, re_path
 from django.views.static import serve
+from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include([
         path('auth/', include('login.urls')),
         path('blog/', include('blog.urls')),
-    ])),
+    ]))
 ] 
+
+# language
+# urlpatterns += i18n_patterns(
+#     path('api/', include([
+#         path('auth/', include('login.urls')),
+#         path('blog/', include('blog.urls')),
+#     ]))
+# )
 
 # For development
 urlpatterns += [
@@ -59,3 +68,4 @@ urlpatterns += [
    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
+

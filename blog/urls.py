@@ -5,7 +5,7 @@ from blog.views import (
     BlogPostGetView,
     BlogPostUserGetView,
     BlogSectionView,
-    BlogSearchView,
+    BlogSearchView
 )
 
 
