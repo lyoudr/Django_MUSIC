@@ -10,7 +10,7 @@ deploy :
     - git checkout -- .
     - git clean -fd # Remove untracked files
     - git pull origin master
-    - docker-compose up --build
+    - docker-compose up -d
     - EOT
   only:
     - master

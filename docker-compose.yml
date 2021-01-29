@@ -79,8 +79,6 @@ services :
     depends_on:
       - postgres_db
     restart : always
-    ports : 
-      - 5001:5001
     volumes : 
       - static-content:/music/static
       - static-content:/tmp/media
