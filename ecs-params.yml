@@ -1,0 +1,21 @@
+version : 1
+task_definition : 
+  services :
+    nginx :
+      cpu_shares : 100
+      mem_limit : 300MB
+    postgres_db : 
+      cpu_shares : 100
+      mem_limit : 300MB
+    ann_server_1 :
+      cpu_shares : 100
+      mem_limit : 300MB
+  docker_volumes :
+    - name : static-content
+      scope : "shared"
+      autoprovision : true
+      driver : "local"
+    - name : media-content
+      scope : "shared"
+      autoprovision : true
+      driver : "local"
