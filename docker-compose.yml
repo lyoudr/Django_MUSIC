@@ -1,7 +1,7 @@
 version : '3'
 
 services :
-  # 2. database
+  # 1. database
   postgres_db :
     image : postgres:12.5
     environment: 
@@ -11,24 +11,32 @@ services :
     volumes:
       - ./postgres_data:/var/lib/postgresql
 
+    ## can't use healthcheck when running on ECS
     # healthcheck:
     #   test : ["CMD", "pg_isready", "--dbname", "music", "--host", "postgres_db", "-U", "ann"]
     #   timeout: 5sd
     #   retries : 5
 
-  # 3. server 
+  # 2. server 
   # server_1
   ann_server_1:
+    ## (ecs) use "image" when running on ECS
+    image : lyoudr/music_public:latest
+
+    ## (local) use "build" when needs to build locally
+    
     # build :
     #   context : .
     #   dockerfile: ./docker/config/Dockerfile
-    image : lyoudr/music_public:latest
+
+    ## (ecs) use "logging" to log error of this container on ECS
     logging :
       driver : awslogs
       options : 
         awslogs-group : music
         awslogs-region : ap-northeast-1
         awslogs-stream-prefix : ann_server_1
+  
     environment:
       # system
       - ENV=prod 
@@ -49,29 +57,31 @@ services :
       - static-content:/music/static
       - media-content:/tmp/media
 
-  # 1. web server
+  # 3. web server
   nginx :
-    # Image
+    ## (ecs) use "image" when running on ECS
     image : lyoudr/nginx_public:latest
+
+    ## (local) use "build" when needs to build locally
+
+    # build :
+    #   context : .
+    #   dockerfile : ./docker/nginx/Dockerfile
+    
+    ## (ecs) use "logging" to log error of this container on ECS
     logging :
       driver : awslogs
       options : 
         awslogs-group : music
         awslogs-region : ap-northeast-1
         awslogs-stream-prefix : ann_server_1
-    # For build locally
-    # build :
-    #   context : .
-    #   dockerfile : ./docker/nginx/Dockerfile
     volumes:
       - static-content:/tmp/static
       - media-content:/tmp/media
+
+    ## link nginx with ec2 (have to use links in ecs rather than "depends_on")
     links :
-      - ann_server_1
-    # depends_on:
-    #   - ann_server_1
-      # - ann_server_2
-      # - ann_server_3
+      - ann_server_1 
     ports: 
       - 80:80
       - 443:443
