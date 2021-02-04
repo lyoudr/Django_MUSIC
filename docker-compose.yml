@@ -50,8 +50,11 @@ services :
       - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
       - AWS_SECRET_ACCESS_KEY=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
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
-    depends_on:
+    
+    ## link ann_server_1 with postgres_db (have to use links in ecs rather than "depends_on")
+    links:
       - postgres_db
+
     restart : always
     volumes : 
       - static-content:/music/static
@@ -79,7 +82,7 @@ services :
       - static-content:/tmp/static
       - media-content:/tmp/media
 
-    ## link nginx with ec2 (have to use links in ecs rather than "depends_on")
+    ## link nginx with ann_server_1 (have to use links in ecs rather than "depends_on")
     links :
       - ann_server_1 
     ports: 

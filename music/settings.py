@@ -36,7 +36,7 @@ SECRET_KEY = '@o*b@#vc)w!it$c=#%!i()07u328%--za65c7uyk6r3jdh6lv@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'ec2-13-115-63-231.ap-northeast-1.compute.amazonaws.com', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'ec2-13-115-63-231.ap-northeast-1.compute.amazonaws.com', 'localhost', 'musicloadbalancer-517731158.ap-northeast-1.elb.amazonaws.com']
 
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:4200'
