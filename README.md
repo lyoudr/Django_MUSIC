@@ -1,5 +1,8 @@
 ## Use Docker Compose to define containers
 
+Architecture diagram
+![alt text](https://gitlab.com/lyoudr/music_server/-/blob/ecs/ecs_architecture.png)
+
 ### 1. Write your docker-copmose.yml file
 
 - can only use **image** when deploying to ECS, so build dockerfile locally first
@@ -77,6 +80,35 @@ docker push lyoudr/music_public:music_1
       - static-content:/music/static
       - media-content:/tmp/media
 
+```
+
+### 4. Add ecs-params.yml to define the memory and CPU usage of your container
+- cpu_shares : cpu your container can use
+- mem_limit : memory limit
+- docker_volumes : docker volume used
+
+```
+version : 1
+task_definition : 
+  services :
+    nginx :
+      cpu_shares : 100
+      mem_limit : 300MB
+    postgres_db : 
+      cpu_shares : 100
+      mem_limit : 300MB
+    ann_server_1 :
+      cpu_shares : 100
+      mem_limit : 300MB
+  docker_volumes :
+    - name : static-content
+      scope : "shared"
+      autoprovision : true
+      driver : "local"
+    - name : media-content
+      scope : "shared"
+      autoprovision : true
+      driver : "local"
 ```
 
 -----
