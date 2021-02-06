@@ -115,7 +115,7 @@ ecs-cli compose up --create-log-groups --cluster-config ec2-tutorial --ecs-profi
 ecs-cli compose down --cluster-config ec2-tutorial --ecs-profile ec2-tutorial-profile
 ```
 - create service using compose file
-```
+
 ```
 ecs-cli compose service up --cluster-config ec2-tutorial --ecs-profile ec2-tutorial-profile
 ```
