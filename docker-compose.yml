@@ -21,7 +21,7 @@ services :
   # server_1
   ann_server_1:
     ## (ecs) use "image" when running on ECS
-    image : lyoudr/music_public:latest
+    image : lyoudr/music_public:music_1
 
     ## (local) use "build" when needs to build locally
     
@@ -77,7 +77,7 @@ services :
       options : 
         awslogs-group : music
         awslogs-region : ap-northeast-1
-        awslogs-stream-prefix : ann_server_1
+        awslogs-stream-prefix : nginx
     volumes:
       - static-content:/tmp/static
       - media-content:/tmp/media
