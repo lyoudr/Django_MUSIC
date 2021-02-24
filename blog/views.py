@@ -11,9 +11,8 @@ from blog.serializers import (
     BlogSectionSerializer, 
     BlogClassSerializer
 )
-
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -32,6 +31,7 @@ import os
 class BlogClassView(GenericAPIView):
     queryset = BlogClass.objects.all()
     serializer_class = BlogClassSerializer
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_summary = 'get all blog class',
@@ -48,6 +48,7 @@ class BlogPostGetView(GenericAPIView):
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogPostSerializer
     pagination_class = CustomNumberPagination
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_summary = 'Get blog post about music',
@@ -113,7 +114,7 @@ class BlogSearchView(GenericAPIView):
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogPostSerializer
     pagination_class = CustomNumberPagination
-
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_summary = 'keyword search blog post',
@@ -146,8 +147,7 @@ class BlogPostUserGetView(GenericAPIView):
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogPostSerializer
     pagination_class = CustomNumberPagination
-    permission_classes = [IsAuthenticated]
-
+    
     @swagger_auto_schema(
         operation_summary = 'Get personal post about music',
         tags = ['blog manage'],
@@ -230,8 +230,6 @@ class BlogPostManageView(GenericAPIView):
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogPostSerializer
     pagination_class = CustomNumberPagination
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_summary = 'Create blog post about music',
@@ -371,8 +369,6 @@ class BlogSectionView(GenericAPIView):
     queryset = BlogSection.objects.all()
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogSectionSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         operation_summary = 'Create blog section of music',

@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from django.conf import settings
 from pathlib import Path
+from datetime import timedelta
 
 import os
 import environ
@@ -36,14 +37,7 @@ SECRET_KEY = '@o*b@#vc)w!it$c=#%!i()07u328%--za65c7uyk6r3jdh6lv@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '127.0.0.1', 
-    '0.0.0.0', 
-    'ec2-13-115-63-231.ap-northeast-1.compute.amazonaws.com', 
-    'ec2-13-115-202-52.ap-northeast-1.compute.amazonaws.com',
-    'localhost', 
-    'musicloadbalancer-517731158.ap-northeast-1.elb.amazonaws.com'
-]
+ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:4200'
@@ -127,7 +121,49 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES' : (
+        "rest_framework.authentication.TokenAuthentication",
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+}
+
+# JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME' : timedelta(days = 1),
+    'ROTATE_REFRESH_TOKENS' : True,
+    'BLACKLIST_AFTER_ROTATION' : True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM' : 'HS256',
+    'SIGNING_KEY': settings.SECRET_KEY,
+    'AUDIENCE' : None,
+    'ISSUER' : None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken'),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JIT_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
 }
 
 # Password validation
