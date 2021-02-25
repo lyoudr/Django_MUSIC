@@ -1,21 +1,47 @@
 version : 1
-task_definition : 
-  services :
-    nginx :
-      cpu_shares : 100
-      mem_limit : 300MB
+task_definition :
+  ecs_network_mode : awsvpc
+  task_execution_role : ecsTaskExecutionRole
+  task_size :
+    mem_limit : 0.5GB
+    cpu_limit : 256
+  services:
     postgres_db : 
-      cpu_shares : 100
+      cpu_shares : 80
       mem_limit : 300MB
+
     ann_server_1 :
-      cpu_shares : 100
+      cpu_shares : 80
       mem_limit : 300MB
-  docker_volumes :
-    - name : static-content
-      scope : "shared"
-      autoprovision : true
-      driver : "local"
-    - name : media-content
-      scope : "shared"
-      autoprovision : true
-      driver : "local"
+      depends_on : 
+        - container_name : postgres_db
+          condition : HEALTHY
+    nginx :
+      cpu_shares : 80
+      mem_limit : 300MB
+      depends_on:
+        - container_name : ann_server_1
+          condition : HEALTHY
+
+
+
+  ### Fargate compatible task definitions do not support sourcePath
+  # docker_volumes :
+  #   - name : static-content
+  #     scope : "shared"
+  #     autoprovision : true
+  #     driver : "local"
+  #   - name : media-content
+  #     scope : "shared"
+  #     autoprovision : true
+  #     driver : "local"
+
+run_params :
+  network_configuration :
+    awsvpc_configuration :
+      subnets :
+        - "subnet-008fd57a3d1964027"
+        - "subnet-095b1bce75fa7ec7d"
+      security_groups :
+        - "sg-07a44b54b51e9ebb5"
+      assign_public_ip : ENABLED
