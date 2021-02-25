@@ -24,15 +24,12 @@ services :
       retries : 10
 
     environment:
-      # system
       - ENV=prod 
       - STATIC_ROOT=/music/static/
-      # database
       - DB_HOST=postgres_db
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
-      # aws_s3
       - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
       - AWS_SECRET_ACCESS_KEY=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
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
@@ -41,7 +38,6 @@ services :
 
   nginx :
     image : lyoudr/nginx_public:latest
-
     ports: 
       - 80:80
       - 443:443
