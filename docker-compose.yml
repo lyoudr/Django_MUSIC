@@ -3,30 +3,28 @@ version : '3'
 services :
   postgres_db :
     image : postgres:12.5
-    container_name: postgres_db
     environment: 
       - POSTGRES_DB=music
       - POSTGRES_USER=ann
       - POSTGRES_PASSWORD=GxXynskDj134yi7P
+      - POSTGRES_HOST_AUTH_METHOD=trust
 
     healthcheck :
       test : ["CMD-SHELL", "pg_isready --dbname music -U ann"]
       timeout : 30s
       retries : 3
 
-  ann_server_1:
-    container_name: ann_server_1
-    image : lyoudr/music_public:music_1
 
+  ann_server_1:
+    image : lyoudr/music_public:music_1
     healthcheck :
       test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class/"]
       timeout : 60s
       retries : 10
-
     environment:
       - ENV=prod 
       - STATIC_ROOT=/music/static/
-      - DB_HOST=postgres_db
+      - DB_HOST=localhost
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
@@ -36,8 +34,26 @@ services :
     
     restart : always
 
+    logging:
+        driver: awslogs
+        options: 
+          awslogs-group: tutorial
+          awslogs-region: ap-northeast-1
+          awslogs-stream-prefix: ann_server_1
+
   nginx :
     image : lyoudr/nginx_public:latest
+    healthcheck :
+      test : ["CMD-SHELL", "nginx", "-t"]
+      timeout : 60s
+      retries : 10
     ports: 
       - 80:80
       - 443:443
+
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: tutorial
+        awslogs-region: ap-northeast-1
+        awslogs-stream-prefix: nginx
