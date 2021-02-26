@@ -1,3 +1,4 @@
+### ECS Fargate
 version : 1
 task_definition :
   ecs_network_mode : awsvpc
@@ -13,6 +14,7 @@ task_definition :
     ann_server_1 :
       cpu_shares : 80
       mem_limit : 300MB
+      # set "depends_on" in ecs-params instead of setting in docker-copmose.yml
       depends_on : 
         - container_name : postgres_db
           condition : HEALTHY
@@ -23,25 +25,12 @@ task_definition :
         - container_name : ann_server_1
           condition : HEALTHY
 
-
-
-  ### Fargate compatible task definitions do not support sourcePath
-  # docker_volumes :
-  #   - name : static-content
-  #     scope : "shared"
-  #     autoprovision : true
-  #     driver : "local"
-  #   - name : media-content
-  #     scope : "shared"
-  #     autoprovision : true
-  #     driver : "local"
-
 run_params :
   network_configuration :
     awsvpc_configuration :
       subnets :
-        - "subnet-008fd57a3d1964027"
+        - "subnet-008fd57a3d1964027" # Configuring these subnets "Route Table" to "internet gateway" to make it public subnets
         - "subnet-095b1bce75fa7ec7d"
       security_groups :
-        - "sg-07a44b54b51e9ebb5"
+        - "sg-07a44b54b51e9ebb5" # the security group have to allow HTTP 80
       assign_public_ip : ENABLED

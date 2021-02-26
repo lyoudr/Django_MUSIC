@@ -1,3 +1,4 @@
+# If there are volumes to correspond, have to use EBS
 version : '3'
 
 services :
@@ -17,6 +18,7 @@ services :
 
   ann_server_1:
     image : lyoudr/music_public:music_1
+    # have to write "healthcheck" 
     healthcheck :
       test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class/"]
       timeout : 60s
@@ -24,7 +26,7 @@ services :
     environment:
       - ENV=prod 
       - STATIC_ROOT=/music/static/
-      - DB_HOST=localhost
+      - DB_HOST=localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
