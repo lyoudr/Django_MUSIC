@@ -175,7 +175,7 @@ class ResetPassWordView(GenericAPIView):
     queryset = User.objects.all()
     serializer_class = ResetPassWordSerializer
     parser_classes = (FormParser, MultiPartParser)
-    permission_classes = [EmailTokenPermissions]
+    permission_classes = [EmailTokenPermissions] # Custom permission class to verify that token is valid
 
     @swagger_auto_schema(
         operation_summary = 'apply for account',
