@@ -1,5 +1,4 @@
 from music.pagination import CustomNumberPagination
-from music.utils import custom_exception_handler
 
 from blog.models import (
     BlogClass, 
@@ -28,6 +27,8 @@ from drf_yasg import openapi
 import boto3
 import os
 
+class APICustomError(Exception): pass
+
 ### Blog View
 class BlogClassView(GenericAPIView):
     queryset = BlogClass.objects.all()
@@ -40,7 +41,12 @@ class BlogClassView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         blog_classes = self.get_queryset()
         serializer = self.serializer_class(blog_classes, many = True)
-        return Response(data = serializer.data, status = status.HTTP_200_OK)
+        print('serializer.data is =>', serializer.data)
+        if serializer.data :
+            return Response(data = serializer.data, status = status.HTTP_200_OK)
+        else :
+            raise APICustomError('01', '0001', '405', 'Blog class')
+            #raise Exception('01', '0001', '404', 'Blog class')
 
 
 class BlogPostGetView(GenericAPIView):
@@ -194,34 +200,33 @@ class BlogPostUserGetView(GenericAPIView):
     )
     def get(self, request, *args, **kwargs):
         user_id = request.GET.get('user_id')
-        print('user_id is =>', user_id)
 
         self.page = request.GET.get('page')
         self.page_size = request.GET.get('page_size')
 
         post_id = request.GET.get('id')
 
-        try :
-            if post_id:
-                post = self.get_queryset().get(pk = post_id, user__pk = user_id)
-                serializer = self.serializer_class(post, many = False, context = {'detail': True})
-                data = serializer.data
+        # try :
+        if post_id:
+            post = self.get_queryset().get(pk = post_id, user__pk = user_id)
+            serializer = self.serializer_class(post, many = False, context = {'detail': True})
+            data = serializer.data
 
-            else :
-                posts = self.get_queryset().filter(user__pk = user_id).order_by('created_time')
-                
-                if request.GET.get('class'):
-                    classification = [int(class_x) for class_x in request.GET.get('class').split(',')]
-                    posts = posts.filter(blogclass_id__in = classification)
-                
-                pag_posts = self.paginate_queryset(posts)
-                serializer = self.serializer_class(pag_posts, many = True)
-                data = self.get_paginated_response(serializer.data).data
-            return Response(data = data, status = status.HTTP_200_OK)
+        else :
+            posts = self.get_queryset().filter(user__pk = user_id).order_by('created_time')
+            
+            if request.GET.get('class'):
+                classification = [int(class_x) for class_x in request.GET.get('class').split(',')]
+                posts = posts.filter(blogclass_id__in = classification)
+            
+            pag_posts = self.paginate_queryset(posts)
+            serializer = self.serializer_class(pag_posts, many = True)
+            data = self.get_paginated_response(serializer.data).data
+        return Response(data = data, status = status.HTTP_200_OK)
 
-        except Exception as error:
-            res = 'no post match'
-            return Response(data = res, status = status.HTTP_400_BAD_REQUEST)
+        # except Exception as error:
+        #     res = 'no post match'
+        #     return Response(data = res, status = status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -356,12 +361,12 @@ class BlogPostManageView(GenericAPIView):
         
         # delete files saved in S3 bucket
         key_list = [post.photo.name, post.music_sheet.name]
-        try:
-            s3 = boto3.resource('s3')
-            for key in key_list:
-                s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), key).delete()
-        except Exception as error:
-            raise error
+        # try:
+        s3 = boto3.resource('s3')
+        for key in key_list:
+            s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), key).delete()
+        # except Exception as error:
+        #     raise error
 
         post.delete()
         return Response(data = f'delete blog post id {post_id} successfully', status = status.HTTP_200_OK)
@@ -551,11 +556,11 @@ class BlogSectionView(GenericAPIView):
         
         # delete files saved in S3 bucket
         if section_to_delete.post_type == 'photo':
-            try :
-                s3 = boto3.resource('s3')
-                s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), section_to_delete.photo.name).delete()
-            except Exception as error:
-                raise error
+            # try :
+            s3 = boto3.resource('s3')
+            s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), section_to_delete.photo.name).delete()
+            # except Exception as error:
+            #     raise error
         
         section_to_delete.delete()
         return Response(data = f'delete blog section {section_id} successfully', status = status.HTTP_200_OK)
