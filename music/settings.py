@@ -117,7 +117,6 @@ DATABASES = {
 
 # Django Rest Framework
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER' : 'music.utils.custom_exception_handler',
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -127,6 +126,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'EXCEPTION_HANDLER' : 'music.utils.exceptions.custom_exception_handler'
 }
 
 # JWT settings
@@ -218,3 +218,15 @@ MEDIA_ROOT = '/Users/ann.ke/Ann/music_storage/'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ann.ke@cloud-interactive.com' # Your gmail account
+EMAIL_HOST_PASSWORD = 'yuki1061ann4562'
+EMAIL_RESET_PASS_LINK = 'http://127.0.0.1:8000/login/reset_password'
+# It is the port used by the SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False

@@ -12,14 +12,11 @@ class EmailTokenPermissions(permissions.BasePermission):
     '''
     def has_permission(self, request, view):
         email_token = request.headers.get('Authorization')
-        print('email_token is =>', email_token)
         # decode token
         try:
             payload = jwt.decode(email_token, settings.SECRET_KEY, algorithms='HS256')
-            print('payload is =>', payload)
             # varify token is not expired
             if int(datetime.now().timestamp()) >= payload['exp']:
-                print("here")
                 return False
             else:
                 return True
