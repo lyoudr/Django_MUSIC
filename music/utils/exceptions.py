@@ -17,9 +17,9 @@ class APIError :
 
     def get_api_error_msg(self, err_code, obj_name):
         if err_code == '0001':
-            return f'{obj_name} can not be found .'
+            return f'{obj_name} is not authorized.'
         if err_code == '0002':
-            return f'{obj_name} can not be created .'
+            return f'{obj_name} is forbidden to this api.'
         if err_code == '0003':
             return f'{obj_name} can not be updated .'
         if err_code == '0004':
@@ -77,9 +77,9 @@ class Error(DBError, APIError, SYSError) :
 def custom_exception_handler(exc, context):
     # Call REST framework's default exception handler first,
     # to get the standard error response.
+
     response = exception_handler(exc, context)
     err_type, err_code, status_code, obj_name = exc.args
-    
     err_handler = Error()
     error_result = err_handler.error_result(err_type, err_code, obj_name)
 

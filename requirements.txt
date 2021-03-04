@@ -23,3 +23,9 @@ django-storages==1.11.1
 
 # simple jwt
 djangorestframework-simplejwt==4.6.0
+
+# celery
+celery==5.0.5
+
+# redis
+redis==3.5.3

@@ -1,10 +1,10 @@
 from django.conf import settings
-from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 from login.serializers import LoginSerializer, RegisterSerializer, ForGetPassWordSerializer, ResetPassWordSerializer
 from login.utils.permissions import EmailTokenPermissions
+from login.utils.tasks import send_email
 
 
 from rest_framework.permissions import AllowAny
@@ -27,6 +27,7 @@ from drf_yasg import openapi
 from datetime import datetime, timedelta
 import jwt
 
+from account.utils.decorators import api_authenticate
 
 # Register use , apply for an account
 class RegisterView(GenericAPIView):
@@ -114,9 +115,9 @@ class LogInView(GenericAPIView):
                 }
                 return Response(data = data, status = status.HTTP_200_OK)
             else:
-                # Return an 'invalid login' error message.
-                return Response('wrong username or password', status = status.HTTP_401_UNAUTHORIZED)
-
+                return Response(data = 'nog login')
+                # raise APIException('02', '0001', '401', f'{user}')
+            
 
 
 # Forget password word to send email
@@ -134,7 +135,7 @@ class ForgetPassWordView(APIView):
         # Generate jwt token
         email_token = jwt.encode(
             payload, 
-            settings.SECRET_KEY, 
+            settings.SECRET_KEY, # signature 
             algorithm="HS256"
         )
         return email_token
@@ -162,13 +163,12 @@ class ForgetPassWordView(APIView):
                     <a href ="http://127.0.0.1:8000/api/blog/class/?token={self.email_token(to_email)}">Link<a>
                 </p>
             '''
-            send_mail(
+            send_email.delay(
                 subject = 'Music Reset Password Validation',  
                 message = 'Email reset password',
                 from_email = settings.EMAIL_HOST_USER,
-                recipient_list = [to_email],
-                fail_silently=False,
-                html_message= html_msg
+                to_email = to_email,
+                html_msg= html_msg
             )
         return Response('Email has been sent to your email', status = status.HTTP_200_OK)
 
@@ -220,5 +220,9 @@ class ResetPassWordView(GenericAPIView):
 
 
 
-def logout_view(request):
-    logout(request)
+class LogOutView(APIView):
+    
+    @api_authenticate((1, 2))
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return Response(data = "You've benn logout")

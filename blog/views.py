@@ -10,6 +10,8 @@ from blog.serializers import (
     BlogSectionSerializer, 
     BlogClassSerializer
 )
+from account.utils.decorators import api_authenticate
+
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import GenericAPIView
@@ -45,8 +47,8 @@ class BlogClassView(GenericAPIView):
         if serializer.data :
             return Response(data = serializer.data, status = status.HTTP_200_OK)
         else :
-            raise APICustomError('01', '0001', '405', 'Blog class')
-            #raise Exception('01', '0001', '404', 'Blog class')
+            # raise APICustomError('01', '0001', '404', 'Blog class')
+            raise Exception('01', '0001', '404', 'Blog class')
 
 
 class BlogPostGetView(GenericAPIView):
@@ -153,7 +155,7 @@ class BlogPostUserGetView(GenericAPIView):
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogPostSerializer
     pagination_class = CustomNumberPagination
-    
+
     @swagger_auto_schema(
         operation_summary = 'Get personal post about music',
         tags = ['blog manage'],
