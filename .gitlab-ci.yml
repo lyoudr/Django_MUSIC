@@ -1,18 +1,22 @@
 
 stages :
-  - deploy
-#
-deploy :
+  - build
+  - deploy 
+
+
+.job_deploy_template :
   stage : deploy
+  image : 
+    name : amazon/aws-cli
+    entrypoint : [""]
+  before_script :
+    - aws configure set region $AWS_DEFAULT_REGION
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
   script :
-    - ssh ubuntu@ec2-3-112-188-17.ap-northeast-1.compute.amazonaws.com <<EOT -i /Users/ann.ke/.ssh/music_web.pem
-    - cd music_server
-    - git checkout -- .
-    - git clean -fd # Remove untracked files
-    - git pull origin master
-    - docker-compose up -d
-    - EOT
+    - >-
+      aws ecs 
   only:
-    - master
+    - other
   tags :
     - ann
