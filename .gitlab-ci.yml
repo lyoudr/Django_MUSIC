@@ -13,7 +13,7 @@ variables :
   stage : build
   image : docker:19.03
   script :
-    - docker login --username lyoudr --password-stdin $DOCKER_HUB_PASSWD
+    - docker login --username "lyoudr" -p $DOCKER_HUB_PASSWD
     - docker build -f Dockerfile.nginx -t nginx:latest .
     - docker tag nginx:latest lyoudr/nginx_public:latest
     - docker push lyoudr/nginx_public:latest
