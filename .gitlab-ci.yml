@@ -3,6 +3,26 @@ stages :
   - build
   - deploy 
 
+variables :
+  CLUSTER : "tutorial"
+  PROJECT_NAME : "tutorial"
+  CLUSTER_CONFIG : "tutorial"
+  ECS_PROFILE : "tutorial-profile"
+
+.job_build_template :
+  stage : build
+  image : docker:19.03
+  script :
+    - docker login --username lyoudr --password-stdin $DOCKER_HUB_PASSWD
+    - docker build -f Dockerfile.nginx -t nginx:latest .
+    - docker tag nginx:latest lyoudr/nginx_public:latest
+    - docker push lyoudr/nginx_public:latest
+
+    - docker build -f Dockerfile.server -t music_server:latest .
+    - docker tag music_server:latest lyoudr/music_public:music_1 
+    - docker push lyoudr/music_public:music_1
+    - docker logout $DOCKER_HUB_PASSWD
+
 
 .job_deploy_template :
   stage : deploy
@@ -15,8 +35,22 @@ stages :
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
   script :
     - >-
-      aws ecs 
-  only:
-    - other
+      ecs-cli compose --project-name $PROJECT_NAME service up --create-log-groups 
+      --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
+    - aws ecs wait services-stable --services $CLUSTER --cluster $CLUSTER
+
+build :
+  extends : .job_build_template
+  stage : build
+  only :
+    - master
   tags :
+    - ann
+
+deploy :
+  extends : .job_deploy_template
+  stage : deploy
+  only : 
+    - master
+  tags : 
     - ann
