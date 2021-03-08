@@ -43,7 +43,7 @@ build :
   extends : .job_build_template
   stage : build
   only :
-    - master
+    - ecs_fargate
   tags :
     - ann
 
@@ -51,6 +51,6 @@ deploy :
   extends : .job_deploy_template
   stage : deploy
   only : 
-    - master
+    - ecs_fargate
   tags : 
     - ann
