@@ -10,6 +10,7 @@ variables :
   ECS_PROFILE : "tutorial-profile"
   ENV : "prod"
   STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/"
+  TEST_ENV : $TEST_ENV
   DB_NAME : "music"
   DB_USER : "ann"
   DB_PASSWORD : "GxXynskDj134yi7P"
