@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 WORKDIR /music
 COPY . /music/
-COPY ./music/.env /music/music/.env
+# COPY ./music/.env /music/music/.env
 COPY ./docker/uwsgi/uwsgi.ini /music/uwsgi.ini
 COPY ./docker/config/entrypoint.sh /music/entrypoint.sh
 COPY ./docker/config/db.json /music/db.json

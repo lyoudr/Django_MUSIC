@@ -14,6 +14,7 @@ variables :
   DB_USER : "ann"
   DB_PASSWORD : "GxXynskDj134yi7P"
   DB_HOST : "127.0.0.1"
+  DOCKER_HUB_PASSWD : "Awdxa48624"
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
