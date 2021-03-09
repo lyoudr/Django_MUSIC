@@ -9,14 +9,14 @@ variables :
   CLUSTER_CONFIG : "tutorial"
   ECS_PROFILE : "tutorial-profile"
 
-.job_build_template :
+job_build_template :
   stage : build
   image : docker:19.03
   script :
-    - docker login --username "lyoudr" --password "${DOCKER_HUB_PASSWD}"
-    - docker build -f Dockerfile.nginx -t nginx:latest .
-    - docker tag nginx:latest lyoudr/nginx_public:latest
-    - docker push lyoudr/nginx_public:latest
+    - docker login --username "lyoudr" --password "Awdxa48624"
+    # - docker build -f Dockerfile.nginx -t nginx:latest .
+    # - docker tag nginx:latest lyoudr/nginx_public:latest
+    # - docker push lyoudr/nginx_public:latest
 
     - docker build -f Dockerfile.server -t music_server:latest .
     - docker tag music_server:latest lyoudr/music_public:music_1 
@@ -24,7 +24,7 @@ variables :
     - docker logout $DOCKER_HUB_PASSWD
 
 
-.job_deploy_template :
+job_deploy_template :
   stage : deploy
   image : 
     name : amazon/aws-cli
