@@ -29,8 +29,8 @@ run_params :
   network_configuration :
     awsvpc_configuration :
       subnets :
-        - "subnet-008fd57a3d1964027" # Configuring these subnets "Route Table" to "internet gateway" to make it public subnets
-        - "subnet-095b1bce75fa7ec7d"
+        - "subnet-01524ee0d9e24a0d9" # Configuring these subnets "Route Table" to "internet gateway" to make it public subnets
+        - "subnet-06a6b43bb34ac7986"
       security_groups :
-        - "sg-07a44b54b51e9ebb5" # the security group have to allow HTTP 80
+        - "sg-01fc50da545eedb0c" # the security group have to allow HTTP 80
       assign_public_ip : ENABLED

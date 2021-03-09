@@ -8,15 +8,18 @@ variables :
   PROJECT_NAME : "tutorial"
   CLUSTER_CONFIG : "tutorial"
   ECS_PROFILE : "tutorial-profile"
+  AWS_DEFAULT_REGION : "ap-northeast-1"
+  AWS_ACCESS_KEY_ID : "AKIAXSGGC3XSBLLMV4JY"
+  AWS_SECRET_ACCESS_KEY : "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"
 
 job_build_template :
   stage : build
   image : docker:19.03
   script :
     - docker login --username "lyoudr" --password "Awdxa48624"
-    # - docker build -f Dockerfile.nginx -t nginx:latest .
-    # - docker tag nginx:latest lyoudr/nginx_public:latest
-    # - docker push lyoudr/nginx_public:latest
+    - docker build -f Dockerfile.nginx -t nginx:latest .
+    - docker tag nginx:latest lyoudr/nginx_public:latest
+    - docker push lyoudr/nginx_public:latest
 
     - docker build -f Dockerfile.server -t music_server:latest .
     - docker tag music_server:latest lyoudr/music_public:music_1 
