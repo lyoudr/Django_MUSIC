@@ -5,4 +5,4 @@ postgres_data
 *.pyc
 builds/
 __pycache__
-*.env
+# *.env
