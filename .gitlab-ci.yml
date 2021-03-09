@@ -51,6 +51,8 @@ job_deploy_template :
 job :
   build :
     extends : .job_build_template
+    script :  
+      - echo "Hello"
     stage : build
     only :
       - ecs_fargate
@@ -59,6 +61,8 @@ job :
 
   deploy :
     extends : .job_deploy_template
+    script :
+      - echo "deploy"
     stage : deploy
     only : 
       - ecs_fargate
