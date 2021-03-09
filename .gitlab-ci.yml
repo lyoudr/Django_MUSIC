@@ -48,18 +48,19 @@ job_deploy_template :
       --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
     - aws ecs wait services-stable --services $CLUSTER --cluster $CLUSTER
 
-build :
-  extends : .job_build_template
-  stage : build
-  only :
-    - ecs_fargate
-  tags :
-    - ann
+job :
+  build :
+    extends : .job_build_template
+    stage : build
+    only :
+      - ecs_fargate
+    tags :
+      - ann
 
-deploy :
-  extends : .job_deploy_template
-  stage : deploy
-  only : 
-    - ecs_fargate
-  tags : 
-    - ann
+  deploy :
+    extends : .job_deploy_template
+    stage : deploy
+    only : 
+      - ecs_fargate
+    tags : 
+      - ann
