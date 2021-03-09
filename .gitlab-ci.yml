@@ -8,15 +8,19 @@ variables :
   PROJECT_NAME : "tutorial"
   CLUSTER_CONFIG : "tutorial"
   ECS_PROFILE : "tutorial-profile"
-  AWS_DEFAULT_REGION : "ap-northeast-1"
-  AWS_ACCESS_KEY_ID : "AKIAXSGGC3XSBLLMV4JY"
-  AWS_SECRET_ACCESS_KEY : "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"
+  ENV : "prod"
+  STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/"
+  DB_NAME : "music"
+  DB_USER : "ann"
+  DB_PASSWORD : "GxXynskDj134yi7P"
+  DB_HOST : "127.0.0.1"
 
+# Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
   stage : build
   image : docker:19.03
   script :
-    - docker login --username "lyoudr" --password "Awdxa48624"
+    - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
     - docker build -f Dockerfile.nginx -t nginx:latest .
     - docker tag nginx:latest lyoudr/nginx_public:latest
     - docker push lyoudr/nginx_public:latest
@@ -26,7 +30,7 @@ job_build_template :
     - docker push lyoudr/music_public:music_1
     - docker logout $DOCKER_HUB_PASSWD
 
-
+# Need to create cluster by hand , and use ecs-cli command to deploy docker-compose file to AWS ECS Fargate here.
 job_deploy_template :
   stage : deploy
   image : 
