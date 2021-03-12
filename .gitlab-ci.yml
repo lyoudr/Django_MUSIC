@@ -11,11 +11,11 @@ variables :
   ENV : "prod"
   STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/"
   TEST_ENV : $TEST_ENV
-  DB_NAME : "music"
-  DB_USER : "ann"
-  DB_PASSWORD : "GxXynskDj134yi7P"
-  DB_HOST : "127.0.0.1"
-  DOCKER_HUB_PASSWD : "Awdxa48624"
+  # DB_NAME : "music"
+  # DB_USER : "ann"
+  # DB_PASSWORD : "GxXynskDj134yi7P"
+  # DB_HOST : "127.0.0.1"
+  # DOCKER_HUB_PASSWD : "Awdxa48624"
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
@@ -31,6 +31,10 @@ job_build_template :
     - docker tag music_server:latest lyoudr/music_public:music_1 
     - docker push lyoudr/music_public:music_1
     - docker logout $DOCKER_HUB_PASSWD
+  only :
+   - ecs_fargate
+  tags : 
+   - ann
 
 # Need to create cluster by hand , and use ecs-cli command to deploy docker-compose file to AWS ECS Fargate here.
 job_deploy_template :
@@ -47,20 +51,23 @@ job_deploy_template :
       ecs-cli compose --project-name $PROJECT_NAME service up --create-log-groups 
       --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
     - aws ecs wait services-stable --services $CLUSTER --cluster $CLUSTER
-
-
-build :
-  extends : .job_build_template
-  stage : build
   only :
-    - ecs_fargate
-  tags :
-    - ann
-
-deploy :
-  extends : .job_deploy_template
-  stage : deploy
-  only : 
-    - ecs_fargate
+   - ecs_fargate
   tags : 
-    - ann
+   - ann
+
+# build :
+#   extends : .job_build_template
+#   stage : build
+#   only :
+#     - ecs_fargate
+#   tags :
+#     - ann
+
+# deploy :
+#   extends : .job_deploy_template
+#   stage : deploy
+#   only : 
+#     - ecs_fargate
+#   tags : 
+#     - ann
