@@ -11,17 +11,13 @@ variables :
   ENV : "prod"
   STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/"
   TEST_ENV : $TEST_ENV
-  # DB_NAME : "music"
-  # DB_USER : "ann"
-  # DB_PASSWORD : "GxXynskDj134yi7P"
-  # DB_HOST : "127.0.0.1"
-  # DOCKER_HUB_PASSWD : "Awdxa48624"
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
   stage : build
   image : docker:19.03
   script :
+    - echo $TEST_ENV
     - echo $DOCKER_HUB_PASSWD
     - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
     - docker build -f Dockerfile.nginx -t nginx:latest .
