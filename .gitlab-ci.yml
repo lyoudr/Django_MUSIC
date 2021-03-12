@@ -22,6 +22,7 @@ job_build_template :
   stage : build
   image : docker:19.03
   script :
+    - echo $DOCKER_HUB_PASSWD
     - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
     - docker build -f Dockerfile.nginx -t nginx:latest .
     - docker tag nginx:latest lyoudr/nginx_public:latest
