@@ -10,14 +10,16 @@ variables :
   ECS_PROFILE : "tutorial-profile"
   ENV : "prod"
   STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/"
-  TEST_ENV : $TEST_ENV
+  DOCKER_HUB_PASSWD : $DOCKER_HUB_PASSWD
+  AWS_DEFAULT_REGION : $AWS_DEFAULT_REGION
+  AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
   stage : build
   image : docker:19.03
   script :
-    - echo $TEST_ENV
     - echo $DOCKER_HUB_PASSWD
     - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
     - docker build -f Dockerfile.nginx -t nginx:latest .
