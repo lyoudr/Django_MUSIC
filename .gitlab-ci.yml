@@ -14,6 +14,9 @@ variables :
   AWS_DEFAULT_REGION : $AWS_DEFAULT_REGION
   AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
   AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
+  CI_REGISTRY_USER : $CI_REGISTRY_USER
+  CI_REGISTRY_PASSWORD : $CI_REGISTRY_PASSWORD
+
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
@@ -22,7 +25,8 @@ job_build_template :
   script :
     - echo $DOCKER_HUB_PASSWD
     - echo $CI_REGISTRY_USER
-    - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
+    - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD
+
     - docker build -f Dockerfile.nginx -t nginx:latest .
     - docker tag nginx:latest lyoudr/nginx_public:latest
     - docker push lyoudr/nginx_public:latest
