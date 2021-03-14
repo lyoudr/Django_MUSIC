@@ -3,9 +3,12 @@ FROM python:3.7.5
 ENV PYTHONUNBUFFERED 1
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 
+ARG TEST_URL=$TEST_URL
 RUN echo $TEST_URL
+
 ENV ENV=prod
 ENV STATIC_ROOT=/Users/ann.ke/Ann/music_server/music/static/
+
 ENV DB_NAME=music
 ENV DB_USER=ann
 ENV DB_PASSWORD=GxXynskDj134yi7P
