@@ -2,6 +2,15 @@ FROM python:3.7.5
 # Setting "PYTONUNBUFFERED" to a non empty value ensures that the python ouput is sent straight to terminal (e.g. your container log) without being first buffered and that you can see the output of your application (e.g. django logs) in real time.
 ENV PYTHONUNBUFFERED 1
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
+
+RUN echo $TEST_URL
+ENV ENV=prod
+ENV STATIC_ROOT=/Users/ann.ke/Ann/music_server/music/static/
+ENV DB_NAME=music
+ENV DB_USER=ann
+ENV DB_PASSWORD=GxXynskDj134yi7P
+ENV DB_HOST=127.0.0.1 
+
 WORKDIR /music
 COPY . /music/
 RUN mkdir -p ~/.docker

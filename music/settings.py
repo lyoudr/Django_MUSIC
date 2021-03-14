@@ -23,8 +23,7 @@ env = environ.Env(
 environ.Env.read_env()
 
 ENV = os.environ.get('ENV').lower()
-
-print('TEST_ENV is =>', os.environ.get('TEST_ENV'))
+print('ENV is =>', ENV)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

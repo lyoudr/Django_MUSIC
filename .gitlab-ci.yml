@@ -8,15 +8,13 @@ variables :
   PROJECT_NAME : "tutorial"
   CLUSTER_CONFIG : "tutorial"
   ECS_PROFILE : "tutorial-profile"
-  ENV : "prod"
-  STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/"
+  
   DOCKER_HUB_PASSWD : $DOCKER_HUB_PASSWD
   AWS_DEFAULT_REGION : $AWS_DEFAULT_REGION
   AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
   AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
-  CI_REGISTRY_USER : $CI_REGISTRY_USER
-  CI_REGISTRY_PASSWORD : $CI_REGISTRY_PASSWORD
 
+  TEST_URL : "hello"
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
@@ -25,9 +23,9 @@ job_build_template :
   script :
     # - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
 
-    - docker build -f Dockerfile.nginx -t nginx:latest .
-    - docker tag nginx:latest lyoudr/nginx_public:latest
-    - docker push lyoudr/nginx_public:latest
+    # - docker build -f Dockerfile.nginx -t nginx:latest .
+    # - docker tag nginx:latest lyoudr/nginx_public:latest
+    # - docker push lyoudr/nginx_public:latest
 
     - docker build -f Dockerfile.server -t music_server:latest .
     - docker tag music_server:latest lyoudr/music_public:music_1 
