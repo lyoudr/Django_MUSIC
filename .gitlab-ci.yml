@@ -14,15 +14,13 @@ variables :
   AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
   AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
 
-  TEST_URL : "hello"
-
   # ENV using by Django server
-  ENV : "prod" #$ENV
-  STATIC_ROOT : "/Users/ann.ke/Ann/music_server/music/static/" #$STATIC_ROOT
-  DB_NAME : "music" #$DB_NAME
-  DB_USER : "ann" #$DB_USER
-  DB_PASSWORD : "GxXynskDj134yi7P" #$DB_PASSWORD
-  DB_HOST : "127.0.0.1" #$DB_HOST
+  ENV : $ENV
+  STATIC_ROOT : $STATIC_ROOT
+  DB_NAME : $DB_NAME
+  DB_USER : $DB_USER
+  DB_PASSWORD : $DB_PASSWORD
+  DB_HOST : $DB_HOST
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
@@ -31,12 +29,14 @@ job_build_template :
   script :
     # - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
 
-    # - docker build -f Dockerfile.nginx -t nginx:latest .
-    # - docker tag nginx:latest lyoudr/nginx_public:latest
-    # - docker push lyoudr/nginx_public:latest
+    - docker build -f Dockerfile.nginx -t nginx:latest .
+    - docker tag nginx:latest lyoudr/nginx_public:latest
+    - docker push lyoudr/nginx_public:latest
 
     - >- 
-      docker build -f Dockerfile.server 
+      docker build 
+      -f Dockerfile.server 
+      -t music_server:latest
       --build-arg TEST_URL=$TEST_URL
       --build-arg ENV=$ENV
       --build-arg STATIC_ROOT=$STATIC_ROOT
@@ -44,8 +44,8 @@ job_build_template :
       --build-arg DB_USER=$DB_USER
       --build-arg DB_PASSWORD=$DB_PASSWORD
       --build-arg DB_HOST=$DB_HOST
+      --no-cache .
 
-      -t music_server:latest .
     - docker tag music_server:latest lyoudr/music_public:music_1 
     - docker push lyoudr/music_public:music_1
     - docker logout $DOCKER_HUB_PASSWD
