@@ -1,0 +1,12 @@
+{
+	"auths": {
+		"520106466788.dkr.ecr.ap-northeast-1.amazonaws.com": {},
+		"https://index.docker.io/v1/": {}
+	},
+	"HttpHeaders": {
+		"User-Agent": "Docker-Client/19.03.13 (darwin)"
+	},
+	"credsStore": "desktop",
+	"experimental": "disabled",
+	"stackOrchestrator": "swarm"
+}
