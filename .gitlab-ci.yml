@@ -25,7 +25,7 @@ job_build_template :
   script :
     - echo $DOCKER_HUB_PASSWD
     - echo $CI_REGISTRY_USER
-    - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD
+    - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
 
     - docker build -f Dockerfile.nginx -t nginx:latest .
     - docker tag nginx:latest lyoudr/nginx_public:latest
