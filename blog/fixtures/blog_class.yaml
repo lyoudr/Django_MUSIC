@@ -1,0 +1,9 @@
+- model: blog.blogclass
+  pk: 1
+  fields:
+    name: "weather"
+- model: blog.blogclass
+  pk: 2
+  fields:
+    name: "business"
+  

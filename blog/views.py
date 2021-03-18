@@ -43,11 +43,9 @@ class BlogClassView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         blog_classes = self.get_queryset()
         serializer = self.serializer_class(blog_classes, many = True)
-        print('serializer.data is =>', serializer.data)
         if serializer.data :
             return Response(data = serializer.data, status = status.HTTP_200_OK)
         else :
-            # raise APICustomError('01', '0001', '404', 'Blog class')
             raise Exception('01', '0001', '404', 'Blog class')
 
 

@@ -13,7 +13,8 @@ ARG DB_HOST=$DB_HOST
 WORKDIR /music
 COPY . /music/
 RUN mkdir -p ~/.docker
-COPY ./docker_config/config.json ~/.docker/config.json
+# Docker login token is stored in config.json, so copy config.json to the folder where docker damean find its token.
+COPY ./docker_config/config.json ~/.docker/config.json 
 COPY ./docker/uwsgi/uwsgi.ini /music/uwsgi.ini
 COPY ./docker/config/entrypoint.sh /music/entrypoint.sh
 COPY ./docker/config/db.json /music/db.json
