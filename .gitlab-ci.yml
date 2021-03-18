@@ -68,7 +68,9 @@ job_deploy_template :
     - >-
       ecs-cli compose --project-name $PROJECT_NAME service up --create-log-groups 
       --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
-    - aws ecs wait services-stable --services $CLUSTER --cluster $CLUSTER
+    - >- 
+      ecs-cli compose --project-name $PROJECT_NAME service ps --cluster-config $CLUSTER_CONFIG
+      --ecs-profile $ECS_PROFILE
   only :
    - ecs_fargate
   tags : 
