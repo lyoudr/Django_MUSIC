@@ -1,0 +1,41 @@
+- model: blog.blogsection
+  pk: 1
+  fields:
+    blogpost: 1
+    order: 1
+    post_type: text
+    text: Weather Report was an American jazz fusion band active from 1970 to 1986.
+      The band was founded (and initially co-led) by Austrian keyboard player Joe
+      Zawinul, American saxophonist Wayne Shorter and Czech bassist Miroslav Vitouš.
+      Other prominent members at various points in the band's lifespan included Jaco
+      Pastorius, Alphonso Johnson, Victor Bailey, Chester Thompson, Peter Erskine,
+      Airto Moreira and Alex Acuna.
+    photo: ''
+    video: null
+- model: blog.blogsection
+  pk: 2
+  fields:
+    blogpost: 1
+    order: 2
+    post_type: photo
+    text: null
+    photo: blog_photos/weather.jpeg
+    video: null
+- model: blog.blogsection
+  pk: 3
+  fields:
+    blogpost: 2
+    order: 1
+    post_type: text
+    text: A business report is a collection of data and analyses that helps make relevant information easily accessible to a company. There are many different types of business reports, but this guide will show you the basic outline.
+    photo: null
+    video: null
+- model: blog.blogsection
+  pk: 4
+  fields:
+    blogpost: 2
+    order: 2
+    post_type: photo
+    text: null
+    photo: blog_photos/weather.jpeg
+    video: null

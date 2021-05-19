@@ -1,0 +1,40 @@
+- model: auth.user
+  pk: 2
+  fields:
+    password: pbkdf2_sha256$216000$9yYAETsYCHBo$fNrlcf/95WXgxR4lS6tdgdraG96Mlhfm6QYc6vFxHlI=
+    last_login: 2021-03-19 01:48:52.116081+00:00
+    is_superuser: false
+    username: ann
+    first_name: ''
+    last_name: ke
+    email: lyoudr@gmail.com
+    is_staff: false
+    is_active: true
+    date_joined: 2020-12-25 06:01:07.262347+00:00
+    groups: []
+    user_permissions: []
+- model: auth.user
+  pk: 3
+  fields:
+    password: pbkdf2_sha256$216000$KGgongvQP6YZ$5VdvwkyAr7+ViP9j6UjlXQwYd/mMd1Z4Cv9cX62XKJk=
+    last_login: 2021-02-24 02:56:29.219661+00:00
+    is_superuser: false
+    username: john
+    first_name: ''
+    last_name: ''
+    email: john@cloud-interactive.com
+    is_staff: false
+    is_active: true
+    date_joined: 2021-02-24 02:56:05.769339+00:00
+    groups: []
+    user_permissions: []
+- model: account.userrole
+  pk: 6
+  fields:
+    user: 3
+    role: 1
+- model: account.userrole
+  pk: 8
+  fields:
+    user: 2
+    role: 2

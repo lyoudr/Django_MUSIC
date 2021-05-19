@@ -13,13 +13,16 @@ ARG DB_HOST=$DB_HOST
 WORKDIR /music
 COPY . /music/
 RUN mkdir -p ~/.docker
+RUN mkdir -p /music/static
 # Docker login token is stored in config.json, so copy config.json to the folder where docker damean find its token.
 COPY ./docker_config/config.json ~/.docker/config.json 
 COPY ./docker/uwsgi/uwsgi.ini /music/uwsgi.ini
 COPY ./docker/config/entrypoint.sh /music/entrypoint.sh
-COPY ./docker/config/db.json /music/db.json
-RUN pip install -r requirements.txt
-RUN pip install uwsgi
+
+RUN pip install -r requirements.txt \
+    && pip install uwsgi \
+    && pip install pyyaml
+
 RUN python manage.py collectstatic --noinput
 RUN ["chmod", "+x", "/music/entrypoint.sh"]
 EXPOSE 5000

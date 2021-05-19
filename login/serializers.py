@@ -28,9 +28,10 @@ class ForGetPassWordSerializer(serializers.Serializer):
 
     def validate(self, data):
         try :
-            user = User.objects.get(email = data['email'])
+            user = User.objects.get(email = data.get('email'))
         except :
-            raise serializers.ValidationError("use email does not existed.")
+            raise serializers.ValidationError("user email does not existed.")
+        
         return data
 
 

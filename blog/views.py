@@ -10,7 +10,8 @@ from blog.serializers import (
     BlogSectionSerializer, 
     BlogClassSerializer
 )
-from account.utils.decorators import api_authenticate
+
+from music.utils.custom_exception import CustomError
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import AllowAny
@@ -35,21 +36,55 @@ class BlogClassView(GenericAPIView):
     queryset = BlogClass.objects.all()
     serializer_class = BlogClassSerializer
     permission_classes = [AllowAny]
+    pagination_class = CustomNumberPagination
 
     @swagger_auto_schema(
         operation_summary = 'get all blog class',
         tags = ['blog'],
+        manual_parameters = [
+            openapi.Parameter(
+                'page',
+                in_ = openapi.IN_QUERY,
+                description = 'page',
+                type = openapi.TYPE_INTEGER,
+                required = False
+            ),
+            openapi.Parameter(
+                'page_size',
+                in_ = openapi.IN_QUERY,
+                description = 'page_size',
+                type = openapi.TYPE_INTEGER,
+                required = False
+            )
+        ]
     )
     def get(self, request, *args, **kwargs):
+        self.page = request.GET.get('page')
+        self.page_size = request.GET.get('page_size')
+
+
         blog_classes = self.get_queryset()
-        serializer = self.serializer_class(blog_classes, many = True)
-        if serializer.data :
-            return Response(data = serializer.data, status = status.HTTP_200_OK)
-        else :
-            raise Exception('01', '0001', '404', 'Blog class')
+        pg_data = self.paginate_queryset(blog_classes)
+        
+        if blog_classes:
+            if pg_data :
+                serializer = self.serializer_class(pg_data, many = True)
+                data = self.get_paginated_response(serializer.data).data
+                
+            else:
+                serializer = self.serializer_class(blog_classes, many = True)
+                data = serializer.data
+            
+            return Response(data = data, status = status.HTTP_200_OK)    
+    
+        raise CustomError(
+            return_code = 'can not find blog',
+            return_message = 'can not find blog',
+            status_code = status.HTTP_404_NOT_FOUND
+        )
 
 
-class BlogPostGetView(GenericAPIView):
+class BlogPostView(GenericAPIView):
     queryset = BlogPost.objects.all()
     parser_classes = (FormParser, MultiPartParser)
     serializer_class = BlogPostSerializer
@@ -75,44 +110,52 @@ class BlogPostGetView(GenericAPIView):
                 required = False
             ),
             openapi.Parameter(
-                'id',
-                in_ = openapi.IN_QUERY,
-                description = 'blog id',
-                type = openapi.TYPE_INTEGER,
-                required = False
-            ),
-            openapi.Parameter(
                 'class',
                 in_ = openapi.IN_QUERY,
                 description = 'classification',
-                type = openapi.TYPE_STRING,
+                type = openapi.TYPE_ARRAY,
+                items= openapi.Items(
+                    type = openapi.TYPE_INTEGER,
+                    description = 'class id'
+                ),
                 required = False
             )
         ]
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
+        # page
         self.page = request.GET.get('page')
         self.page_size = request.GET.get('page_size')
+        
+        b_class = request.GET.get('class', None)
 
-        post_id = request.GET.get('id')
-
-        if post_id:
-            post = self.get_queryset().get(pk = post_id)
-            serializer = self.serializer_class(post, many = False, context = {'detail': True})
-            data = serializer.data
-
-        else :
-            posts = self.get_queryset().order_by('created_time')
-            
-            if request.GET.get('class'):
-                classification = [int(class_x) for class_x in request.GET.get('class').split(',')]
-                posts = posts.filter(blogclass_id__in = classification)
-            
-            pag_posts = self.paginate_queryset(posts)
-            serializer = self.serializer_class(pag_posts, many = True)
-            data = self.get_paginated_response(serializer.data).data
+        posts = self.get_queryset().order_by('created_time')
+        
+        if b_class:
+            posts = posts.filter(blogclass_id__in = [class_x for class_x in b_class.split(',')])
+        
+        pag_posts = self.paginate_queryset(posts)
+        serializer = self.serializer_class(pag_posts, many = True)
+        data = self.get_paginated_response(serializer.data).data
         return Response(data = data, status = status.HTTP_200_OK)
-            
+
+class BlogPostDetailView(GenericAPIView):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+
+    def get(self, request, pk):
+        try :
+            post = self.queryset.get(pk = pk)
+            serializer = self.serializer_class(post)
+            return Response(data = serializer.data, status = status.HTTP_200_OK)
+        except BlogPost.DoesNotExist:
+            raise CustomError(
+                return_message = 'blog post not found', 
+                return_code = 'not found', 
+                status_code = status.HTTP_404_NOT_FOUND
+            )
+
+
 
 
 class BlogSearchView(GenericAPIView):
@@ -273,16 +316,6 @@ class BlogPostManageView(GenericAPIView):
                 in_ = openapi.IN_FORM,
                 description = 'music sheet (pdf) of blog post',
                 type = openapi.TYPE_FILE
-            ),
-            openapi.Parameter(
-                description= '''
-                This is a HTTP Basic authentication => https://en.wikipedia.org/wiki/Basic_access_authentication
-                1. from base64 import b64encode
-                2. fill this field with => Basic b64encode(b"username:password").decode("utf-8")
-                ''',
-                name='Authorization',
-                in_=openapi.IN_HEADER,
-                type=openapi.TYPE_STRING
             )
         ]
     )
@@ -423,16 +456,6 @@ class BlogSectionView(GenericAPIView):
                 type = openapi.TYPE_STRING,
                 allowEmptyValue = True,
                 required = True
-            ),
-            openapi.Parameter(
-                description= '''
-                This is a HTTP Basic authentication => https://en.wikipedia.org/wiki/Basic_access_authentication
-                1. from base64 import b64encode
-                2. fill this field with => Basic b64encode(b"username:password").decode("utf-8")
-                ''',
-                name='Authorization',
-                in_=openapi.IN_HEADER,
-                type=openapi.TYPE_STRING
             )
         ]
     )
@@ -497,16 +520,6 @@ class BlogSectionView(GenericAPIView):
                 type = openapi.TYPE_STRING,
                 allowEmptyValue = True,
                 required = True
-            ),
-            openapi.Parameter(
-                description= '''
-                This is a HTTP Basic authentication => https://en.wikipedia.org/wiki/Basic_access_authentication
-                1. from base64 import b64encode
-                2. fill this field with => Basic b64encode(b"username:password").decode("utf-8")
-                ''',
-                name='Authorization',
-                in_=openapi.IN_HEADER,
-                type=openapi.TYPE_STRING
             )
         ]
     )
@@ -533,16 +546,6 @@ class BlogSectionView(GenericAPIView):
                 description = 'section id',
                 type = openapi.TYPE_INTEGER,
                 required = True
-            ),
-            openapi.Parameter(
-                description= '''
-                This is a HTTP Basic authentication => https://en.wikipedia.org/wiki/Basic_access_authentication
-                1. from base64 import b64encode
-                2. fill this field with => Basic b64encode(b"username:password").decode("utf-8")
-                ''',
-                name='Authorization',
-                in_=openapi.IN_HEADER,
-                type=openapi.TYPE_STRING
             )
         ]
     )
@@ -552,11 +555,11 @@ class BlogSectionView(GenericAPIView):
         
         # delete files saved in S3 bucket
         if section_to_delete.post_type == 'photo':
-            # try :
-            s3 = boto3.resource('s3')
-            s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), section_to_delete.photo.name).delete()
-            # except Exception as error:
-            #     raise error
+            try :
+                s3 = boto3.resource('s3')
+                s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), section_to_delete.photo.name).delete()
+            except Exception as error:
+                raise error
         
         section_to_delete.delete()
         return Response(data = f'delete blog section {section_id} successfully', status = status.HTTP_200_OK)

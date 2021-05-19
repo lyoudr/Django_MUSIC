@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 
 from login.serializers import LoginSerializer, RegisterSerializer, ForGetPassWordSerializer, ResetPassWordSerializer
 from login.utils.permissions import EmailTokenPermissions
-from login.utils.tasks import send_email
+from login.utils.tasks import send_email, AWS_SES
 
+from account.utils.decorators import api_authenticate
 
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -19,7 +20,6 @@ from rest_framework.parsers import (
 )
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -27,7 +27,8 @@ from drf_yasg import openapi
 from datetime import datetime, timedelta
 import jwt
 
-from account.utils.decorators import api_authenticate
+
+
 
 # Register use , apply for an account
 class RegisterView(GenericAPIView):
@@ -99,25 +100,26 @@ class LogInView(GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             user = authenticate(
                 request, 
-                username = serializer.data['username'], 
-                password = serializer.data['password']
+                username = serializer.data.get('username', ''), 
+                password = serializer.data.get('password', ''),
             )
-            if user is not None:
-                login(request, user)
-                # Generate token
-                refresh = RefreshToken.for_user(user)
-                # Redirect to a success page.
-                data = {
-                    'username': user.username,
-                    'id': user.id,
-                    'access': str(refresh.access_token),
-                    'refresh': str(refresh)
-                }
-                return Response(data = data, status = status.HTTP_200_OK)
-            else:
-                return Response(data = 'nog login')
-                # raise APIException('02', '0001', '401', f'{user}')
             
+        if user is not None:
+            login(request, user)
+            # Generate token
+            refresh = RefreshToken.for_user(user)
+            # Redirect to a success page.
+            data = {
+                'username': user.username,
+                'id': user.id,
+                'access': str(refresh.access_token),
+                'refresh': str(refresh)
+            }
+            return Response(data = data, status = status.HTTP_200_OK)
+        
+        return Response(data = 'Not permitted', status = status.HTTP_401_UNAUTHORIZED)
+            
+
 
 
 # Forget password word to send email
@@ -156,20 +158,10 @@ class ForgetPassWordView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid(raise_exception=True):
-            to_email = serializer.data['email']
-            html_msg = f'''
-                <p>
-                    Hello! Please enter to following link to reset password .
-                    <a href ="http://127.0.0.1:8000/api/blog/class/?token={self.email_token(to_email)}">Link<a>
-                </p>
-            '''
-            send_email.delay(
-                subject = 'Music Reset Password Validation',  
-                message = 'Email reset password',
-                from_email = settings.EMAIL_HOST_USER,
-                to_email = to_email,
-                html_msg= html_msg
-            )
+            to_email = serializer.data.get('email')
+            token = self.email_token(to_email)
+            send_email.delay(to_email, token)
+
         return Response('Email has been sent to your email', status = status.HTTP_200_OK)
 
 
@@ -208,12 +200,8 @@ class ResetPassWordView(GenericAPIView):
         ]
     )
     def patch(self, request, *args, **kwargs):
-        user = self.get_queryset().get(email = request.data['email'])
-        serializer = self.serializer_class(
-            user,
-            data = request.data, 
-            partial = True
-        )
+        user = self.get_queryset().get(email = request.data.get('email'))
+        serializer = self.serializer_class(user, data = request.data, partial = True)
         if serializer.is_valid(raise_exception = True):
             serializer.save()
         return Response('Update your password successfully', status = status.HTTP_200_OK)
@@ -222,7 +210,6 @@ class ResetPassWordView(GenericAPIView):
 
 class LogOutView(APIView):
     
-    @api_authenticate((1, 2))
     def post(self, request, *args, **kwargs):
         logout(request)
         return Response(data = "You've benn logout")

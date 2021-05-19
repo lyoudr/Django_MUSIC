@@ -23,7 +23,7 @@ env = environ.Env(
 environ.Env.read_env()
 
 ENV = os.environ.get('ENV').lower()
-print('ENV is =>', ENV)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -128,13 +128,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ),
-    'EXCEPTION_HANDLER' : 'music.utils.exceptions.custom_exception_handler'
+    )
 }
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME' : timedelta(days = 1),
     'ROTATE_REFRESH_TOKENS' : True,
     'BLACKLIST_AFTER_ROTATION' : True,
@@ -155,7 +154,7 @@ SIMPLE_JWT = {
     'JIT_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=60),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
@@ -225,8 +224,9 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 # S3 storage
 # below is the access key and secret access key of IAM user "for-s3"
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+if ENV == 'local':
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 
 
@@ -240,3 +240,4 @@ EMAIL_RESET_PASS_LINK = 'http://127.0.0.1:8000/login/reset_password'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+

@@ -2,7 +2,8 @@ from django.urls import path
 from blog.views import (
     BlogClassView,
     BlogPostManageView,
-    BlogPostGetView,
+    BlogPostView,
+    BlogPostDetailView,
     BlogPostUserGetView,
     BlogSectionView,
     BlogSearchView
@@ -11,9 +12,10 @@ from blog.views import (
 
 urlpatterns = [
     # blog view
-    path('class/', BlogClassView.as_view()),
-    path('post/get/all', BlogPostGetView.as_view()),
-    path('search/', BlogSearchView.as_view()),
+    path('/', BlogPostView.as_view(), name = 'blog post'),
+    path('<int:pk>/', BlogPostDetailView.as_view(), name = 'blog post'),
+    path('class/', BlogClassView.as_view(), name = 'blog class'),
+    path('search/', BlogSearchView.as_view(), name = 'search blog'),
 
     # manage view
     path('post/get/user', BlogPostUserGetView.as_view()),
