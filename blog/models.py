@@ -20,15 +20,20 @@ class BlogPost(models.Model):
     photo = models.FileField(upload_to = 'blog_photos', storage = select_storage)
     music_sheet = models.FileField(upload_to = 'blog_sheets', storage = select_storage)
     description = models.CharField(max_length = 255)
-    created_time = models.DateTimeField(default = timezone.now)
+    permission = models.IntegerField(default = 2) # private : 1, public : 2
+    created_time = models.DateTimeField(auto_now_add = True)
 
     def __str__(self):
         return self.title
 
+    def delete(self):
+        self.photo.delete(save = True)
+        self.music_sheet.delete(save = True)
+        super(BlogPost, self).delete()
 
 
 class BlogSection(models.Model):
-    blogpost = models.ForeignKey(BlogPost, on_delete = models.CASCADE)
+    blogpost = models.ForeignKey(BlogPost, on_delete = models.CASCADE, related_name = 'blog_section')
     order = models.IntegerField()
     post_type = models.CharField(max_length = 255, choices = (
         ('T', 'text'),

@@ -14,5 +14,6 @@ class RemoteStorage(S3Boto3Storage):
     def __init__(self, *args, **kwargs):
         super().__init__(bucket_name = settings.AWS_STORAGE_BUCKET_NAME, *args, **kwargs)
 
+
 def select_storage():
     return LocalStaorge() if settings.ENV == 'local' else RemoteStorage()

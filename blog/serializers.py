@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 from blog.models import BlogClass, BlogPost, BlogSection
 
 from rest_framework import serializers
@@ -10,20 +13,10 @@ class BlogClassSerializer(serializers.ModelSerializer):
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField()
     blogclass_id = serializers.IntegerField()
-    title = serializers.CharField()
-    description = serializers.CharField()
-    photo = serializers.FileField()
     music_sheet = serializers.FileField(required = False)
-    blogpost_id = serializers.SerializerMethodField()
-    created_time = serializers.SerializerMethodField()
+    created_time = serializers.DateTimeField(format = settings.DATE_TIME_FORMAT, read_only=True)
 
-    def get_blogpost_id(self, instance):
-        return instance.pk
-
-    def get_created_time(self, instance):
-        return instance.created_time
     
     def to_representation(self, instance):
         blog_post = super(BlogPostSerializer, self).to_representation(instance)
@@ -36,7 +29,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogPost
-        fields = ['user_id', 'blogclass_id', 'title', 'description', 'photo', 'music_sheet', 'blogpost_id', 'created_time']
+        fields = ('id', 'user_id', 'blogclass_id', 'title', 'description', 'photo', 'music_sheet', 'created_time', 'permission')
 
 
 
@@ -54,4 +47,4 @@ class BlogSectionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BlogSection
-        fields = ['blogpost_id', 'order', 'post_type', 'text', 'photo', 'video', 'section_id']
+        fields = ('blogpost_id', 'order', 'post_type', 'text', 'photo', 'video', 'section_id')

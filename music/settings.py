@@ -241,3 +241,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+# Time Format
+DATE_TIME_FORMAT = '%Y/%m/%d %H:%M'
+
