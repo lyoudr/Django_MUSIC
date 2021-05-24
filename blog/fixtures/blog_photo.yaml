@@ -1,0 +1,16 @@
+- model: blog.blogphoto
+  pk: 1
+  fields:
+    image: blog_photos/weather.jpeg
+- model: blog.blogphoto
+  pk: 2
+  fields:
+    image: blog_photos/art.jpeg
+- model: blog.blogphoto
+  pk: 3
+  fields:
+    image: blog_photos/industry.jpg
+- model: blog.blogphoto
+  pk: 4
+  fields:
+    image: blog_photos/sky.jpg

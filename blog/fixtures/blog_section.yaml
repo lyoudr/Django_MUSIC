@@ -10,7 +10,7 @@
       Other prominent members at various points in the band's lifespan included Jaco
       Pastorius, Alphonso Johnson, Victor Bailey, Chester Thompson, Peter Erskine,
       Airto Moreira and Alex Acuna.
-    photo: ''
+    photo_id: null
     video: null
 - model: blog.blogsection
   pk: 2
@@ -19,7 +19,7 @@
     order: 2
     post_type: photo
     text: null
-    photo: blog_photos/weather.jpeg
+    photo_id: 1
     video: null
 - model: blog.blogsection
   pk: 3
@@ -28,7 +28,7 @@
     order: 1
     post_type: text
     text: A business report is a collection of data and analyses that helps make relevant information easily accessible to a company. There are many different types of business reports, but this guide will show you the basic outline.
-    photo: null
+    photo_id: null
     video: null
 - model: blog.blogsection
   pk: 4
@@ -37,5 +37,5 @@
     order: 2
     post_type: photo
     text: null
-    photo: blog_photos/weather.jpeg
+    photo_id: 2
     video: null

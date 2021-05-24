@@ -22,7 +22,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
         blog_post = super(BlogPostSerializer, self).to_representation(instance)
 
         if self.context.get('detail'):
-            blog_section = BlogSectionSerializer(instance.blogsection_set.all(), many = True).data
+            blog_section = BlogSectionSerializer(instance.blog_section.all().order_by('order'), many = True).data
             blog_post['blog_section'] = blog_section
         return blog_post
 
@@ -38,13 +38,52 @@ class BlogSectionSerializer(serializers.ModelSerializer):
     order = serializers.IntegerField()
     post_type = serializers.CharField()
     text = serializers.CharField(allow_null = True)
-    photo = serializers.FileField(allow_null = True)
+    photo_id = serializers.IntegerField(allow_null = True)
     video = serializers.CharField(allow_null = True)
-    section_id = serializers.SerializerMethodField()
+    photo = serializers.SerializerMethodField()
 
-    def get_section_id(self, instance):
-        return instance.pk
-    
+    def get_photo(self, instance):
+        if instance.photo:
+            return instance.photo.image.url
+        return None
+
+    def update(self, instance, data, used_photos):
+        print('data is =>', data)
+        print('used_photo is =>', used_photos)
+        if instance.post_type == 'photo' and instance.photo_id not in used_photos:
+            print('instance.photo is =>', instance.photo)
+            instance.photo.delete()
+            instance.photo.save()
+        instance.__dict__.update(**data)
+        instance.photo_id = data.get('photo_id', None)
+        instance.save()
+
+        return instance
     class Meta:
         model = BlogSection
-        fields = ('blogpost_id', 'order', 'post_type', 'text', 'photo', 'video', 'section_id')
+        fields = ('id', 'blogpost_id', 'order', 'post_type', 'text', 'photo_id', 'video', 'photo')
+
+
+class ListBlogSectionSerializer(serializers.ListSerializer):
+    child = BlogSectionSerializer()
+
+    def update(self, instance, data):
+        used_photos = [value for sec in data for key, value in sec.items() if key == 'photo']
+        # Map for id => instance and id => data item.
+        db_section = {section.order: section for section in instance}
+        data_section = {section.get('order'): section for section in data}
+
+        # Perform createions and updates.
+        ret = []
+        for data_order, data in data_section.items():
+            section = db_section.get(data_order, None)
+            if section is None:
+                ret.append(self.child.create(data))
+            else:
+                ret.append(self.child.update(section, data, used_photos))
+
+        # Perform deletions. If this order is not in data
+        for db_order, data in db_section.items():
+            if db_order not in data_section:
+                data.delete()
+        return ret

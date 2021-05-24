@@ -11,7 +11,16 @@ class BlogClass(models.Model):
     def __str__(self):
         return self.name
 
+class BlogPhoto(models.Model):
+    image = models.FileField(upload_to = 'blog_photos', storage = select_storage)
 
+    def __str__(self):
+        return self.image.name
+
+    def delete(self):
+        self.image.delete(save = True)
+        super(BlogPhoto, self).delete()
+    
 
 class BlogPost(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, default = 2)
@@ -41,7 +50,7 @@ class BlogSection(models.Model):
         ('V', 'video')
     ))
     text = models.TextField(null = True)
-    photo = models.FileField(upload_to = 'blog_photos', storage = select_storage, null = True)
+    photo = models.ForeignKey(BlogPhoto, on_delete = models.CASCADE, related_name = 'blog_section', null = True)
     video = models.CharField(max_length = 255, null = True)
 
     def __str__(self):

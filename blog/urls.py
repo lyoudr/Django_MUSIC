@@ -1,15 +1,19 @@
+from blog.models import BlogPhoto
 from django.urls import path
 
 from blog.views import (
     # Public 
     BlogClassView,
-    BlogPostManageView,
     BlogPostView,
     BlogPostDetailView,
     # User
     BlogPostUserView,
+    BlogPostUserDetailView,
     BlogSectionView,
-    BlogSearchView
+    BlogSectionManageView,
+    BlogSearchView,
+    # Photo
+    BlogPhotoView,
 )
 
 
@@ -21,7 +25,11 @@ urlpatterns = [
     path('search', BlogSearchView.as_view(), name = 'search blog'),
 
     # manage view
-    path('user/<int:user_id>', BlogPostUserView.as_view(), name = 'blog post user'),
-    path('user', BlogPostManageView.as_view(), name = 'blog post user manage'),
-    path('section/', BlogSectionView.as_view()),
+    path('user', BlogPostUserView.as_view(), name = 'blog post user'),
+    path('user/<int:pk>', BlogPostUserDetailView.as_view(), name = 'blog post user detail'),
+    path('section', BlogSectionView.as_view(), name = 'blog post section'),
+    path('section/<int:pk>', BlogSectionManageView.as_view(), name = 'blog post section'),
+
+    # photo
+    path('photo', BlogPhotoView.as_view(), name = 'blog photo')
 ]

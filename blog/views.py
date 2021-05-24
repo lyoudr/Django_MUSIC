@@ -6,12 +6,14 @@ from music.pagination import CustomNumberPagination
 from blog.models import (
     BlogClass, 
     BlogPost, 
-    BlogSection
+    BlogSection,
+    BlogPhoto,
 )
 from blog.serializers import (
     BlogPostSerializer, 
-    BlogSectionSerializer, 
-    BlogClassSerializer
+    ListBlogSectionSerializer,
+    BlogClassSerializer,
+    ListBlogSectionSerializer
 )
 
 from music.utils.custom_exception import CustomError
@@ -29,9 +31,7 @@ from rest_framework.parsers import (
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
-import boto3
-import os
+ 
 
 class APICustomError(Exception): pass
 
@@ -151,8 +151,8 @@ class BlogPostDetailView(GenericAPIView):
 
     def get(self, request, pk):
         try :
-            post = self.queryset.get(pk = pk)
-            serializer = self.serializer_class(post)
+            post = self.queryset.get(pk = pk, permission = 2)
+            serializer = self.serializer_class(post, context = {'detail': True})
             return Response(data = serializer.data, status = status.HTTP_200_OK)
         except BlogPost.DoesNotExist:
             raise CustomError(
@@ -230,24 +230,20 @@ class BlogPostUserView(GenericAPIView):
             )
         ]
     )
-    def get(self, request, user_id):
+    def get(self, request):
+        user_id = request.user.pk
+        
         self.page = request.GET.get('page')
         self.page_size = request.GET.get('page_size')
 
         posts = self.get_queryset().filter(user__pk = user_id).order_by('created_time')
-        
-        pag_posts = self.paginate_queryset(posts)
-        serializer = self.serializer_class(pag_posts, many = True)
-        data = self.get_paginated_response(serializer.data).data
-        return Response(data = data, status = status.HTTP_200_OK)
-
-
-
-class BlogPostManageView(GenericAPIView):
-    queryset = BlogPost.objects.all()
-    parser_classes = (FormParser, MultiPartParser)
-    serializer_class = BlogPostSerializer
-    pagination_class = CustomNumberPagination
+        if posts:
+            pag_posts = self.paginate_queryset(posts)
+            serializer = self.serializer_class(pag_posts, many = True)
+            data = self.get_paginated_response(serializer.data).data
+            return Response(data = data, status = status.HTTP_200_OK)
+        else:
+            return Response(data = 'not found', status = status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
         operation_summary = 'Create blog post about music',
@@ -296,7 +292,7 @@ class BlogPostManageView(GenericAPIView):
             )
         ]
     )
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid(raise_exception=True):
@@ -407,165 +403,152 @@ class BlogPostManageView(GenericAPIView):
         return Response(data = f'delete blog post id {post_id} successfully', status = status.HTTP_200_OK)
 
 
+class BlogPostUserDetailView(APIView):
+    queryset = BlogPost.objects.all()
+    serializer_class = BlogPostSerializer
+
+    def get(self, request, pk):
+        user_id = request.user.pk
+        try :
+            post = self.queryset.get(user__pk = user_id, pk = pk)
+            serializer = self.serializer_class(post, context = {'detail': True})
+            print('serializer.data is =>', serializer.data)
+            return Response(data = serializer.data, status = status.HTTP_200_OK)
+        except BlogPost.DoesNotExist:
+            raise CustomError(
+                return_message = 'blog post not found', 
+                return_code = 'not found', 
+                status_code = status.HTTP_404_NOT_FOUND
+            )
+
+
 class BlogSectionView(GenericAPIView):
     queryset = BlogSection.objects.all()
-    parser_classes = (FormParser, MultiPartParser)
-    serializer_class = BlogSectionSerializer
+    serializer_class = ListBlogSectionSerializer
 
     @swagger_auto_schema(
         operation_summary = 'Create blog section of music',
         tags = ['blog manage'],
-        manual_parameters = [
-            openapi.Parameter(
-                'blogpost_id',
-                in_ = openapi.IN_FORM,
-                description = 'blog post id this section belongs to',
-                type = openapi.TYPE_INTEGER,
-                required = True
-            ),
-            openapi.Parameter(
-                'order',
-                in_ = openapi.IN_FORM,
-                description = 'section order',
-                type = openapi.TYPE_INTEGER,
-                required = True
-            ),
-            openapi.Parameter(
-                'post_type',
-                in_ = openapi.IN_FORM,
-                description = 'text, photo, video',
-                type = openapi.TYPE_STRING,
-                required = True
-            ),
-            openapi.Parameter(
-                'text',
-                in_ = openapi.IN_FORM,
-                description = 'text content',
-                type = openapi.TYPE_STRING,
-                allowEmptyValue = True,
-                required = True
-            ),
-            openapi.Parameter(
-                'photo',
-                in_ = openapi.IN_FORM,
-                description = 'photo file',
-                type = openapi.TYPE_FILE,
-                allowEmptyValue = True,
-                required = True
-            ),
-            openapi.Parameter(
-                'video',
-                in_ = openapi.IN_FORM,
-                description = 'video file',
-                type = openapi.TYPE_STRING,
-                allowEmptyValue = True,
-                required = True
+        request_body = openapi.Schema(
+            type = openapi.TYPE_ARRAY,
+            items = openapi.Items(
+                type = openapi.TYPE_OBJECT,
+                properties = {
+                    'blogpost_id': openapi.Schema(
+                        type = openapi.TYPE_INTEGER,
+                        description = 'blog id'
+                    ),
+                    'order': openapi.Schema(
+                        type = openapi.TYPE_INTEGER,
+                        description = 'order of this section'
+                    ),
+                    'post_type': openapi.Schema(
+                        type = openapi.TYPE_STRING,
+                        description = 'text, photo, video'
+                    ),
+                    'text': openapi.Schema(
+                        type = openapi.TYPE_STRING,
+                        description = 'text content'
+                    ),
+                    'photo_id': openapi.Schema(
+                        type = openapi.TYPE_INTEGER,
+                        description = 'photo id'
+                    ),
+                    'video': openapi.Schema(
+                        type = openapi.TYPE_STRING,
+                        description = 'video link'
+                    ),
+                }
             )
-        ]
+        )
     )
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
+        print('request.data is =>', request.data)
         serializer = self.serializer_class(data = request.data)
         serializer.is_valid(raise_exception = True)
         serializer.save()
         return Response(data = serializer.data, status = status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        operation_summary = 'Update blog section of music',
-        tags = ['blog manage'],
-        manual_parameters = [
-            openapi.Parameter(
-                'section_id',
-                in_ = openapi.IN_QUERY,
-                description = 'section id',
-                type = openapi.TYPE_INTEGER,
-                required = True
-            ),
-            openapi.Parameter(
-                'blogpost_id',
-                in_ = openapi.IN_FORM,
-                description = 'blog post id this section belongs to',
-                type = openapi.TYPE_INTEGER,
-                required = True
-            ),
-            openapi.Parameter(
-                'order',
-                in_ = openapi.IN_FORM,
-                description = 'section order',
-                type = openapi.TYPE_INTEGER,
-                required = True
-            ),
-            openapi.Parameter(
-                'post_type',
-                in_ = openapi.IN_FORM,
-                description = 'text, photo, video',
-                type = openapi.TYPE_STRING,
-                required = True
-            ),
-            openapi.Parameter(
-                'text',
-                in_ = openapi.IN_FORM,
-                description = 'text content',
-                type = openapi.TYPE_STRING,
-                allowEmptyValue = True,
-                required = True
-            ),
-            openapi.Parameter(
-                'photo',
-                in_ = openapi.IN_FORM,
-                description = 'photo file',
-                type = openapi.TYPE_FILE,
-                allowEmptyValue = True,
-                required = True
-            ),
-            openapi.Parameter(
-                'video',
-                in_ = openapi.IN_FORM,
-                description = 'video file',
-                type = openapi.TYPE_STRING,
-                allowEmptyValue = True,
-                required = True
-            )
-        ]
-    )
-    def patch(self, request, *args, **kwargs):
-        section_id = request.GET.get('section_id')
-        section_to_update = self.get_queryset().get(pk = section_id)
-        serializer = self.serializer_class(
-            section_to_update,
-            data = request.data,
-            partial = True
-        )
-        serializer.is_valid(raise_exception = True)
-        serializer.save()
-        return Response(data = serializer.data, status = status.HTTP_200_OK)
-    
+
+class BlogSectionManageView(APIView):
+    queryset = BlogSection.objects.all()
+    serializer_class = ListBlogSectionSerializer
 
     @swagger_auto_schema(
-        operation_summary = 'delete blog section',
+        operation_summary = 'Create blog section of music',
+        tags = ['blog manage'],
+        request_body = openapi.Schema(
+            type = openapi.TYPE_ARRAY,
+            items = openapi.Items(
+                type = openapi.TYPE_OBJECT,
+                properties = {
+                    'blogpost_id': openapi.Schema(
+                        type = openapi.TYPE_INTEGER,
+                        description = 'blog id'
+                    ),
+                    'order': openapi.Schema(
+                        type = openapi.TYPE_INTEGER,
+                        description = 'order of this section'
+                    ),
+                    'post_type': openapi.Schema(
+                        type = openapi.TYPE_STRING,
+                        description = 'text, photo, video'
+                    ),
+                    'text': openapi.Schema(
+                        type = openapi.TYPE_STRING,
+                        description = 'text content'
+                    ),
+                    'photo_id': openapi.Schema(
+                        type = openapi.TYPE_INTEGER,
+                        description = 'photo id'
+                    ),
+                    'video': openapi.Schema(
+                        type = openapi.TYPE_STRING,
+                        description = 'video link'
+                    ),
+                }
+            )
+        )
+    )
+    def patch(self, request, pk):
+        with transaction.atomic():
+            sections = self.queryset.filter(blogpost_id = pk)
+            serializer = self.serializer_class(
+                sections,
+                data = request.data,
+                partial = True
+            )
+            serializer.is_valid(raise_exception = True)
+            serializer.save()
+            return Response(data = serializer.data, status = status.HTTP_200_OK)
+
+class BlogPhotoView(APIView):
+    model = BlogPhoto
+    parser_classes = (FormParser, MultiPartParser)
+
+    @swagger_auto_schema(
+        operation_summary = 'Upload blog photos',
         tags = ['blog manage'],
         manual_parameters = [
-            openapi.Parameter(
-                'section_id',
-                in_ = openapi.IN_QUERY,
-                description = 'section id',
-                type = openapi.TYPE_INTEGER,
-                required = True
-            )
+             openapi.Parameter(
+                'image',
+                in_ = openapi.IN_FORM,
+                description = 'blog photos',
+                type = openapi.TYPE_FILE,
+            )   
         ]
     )
-    def delete(self, request, *args, **kwargs):
-        section_id = request.GET.get('section_id')
-        section_to_delete = self.get_queryset().get(pk = section_id)
+    @transaction.atomic
+    def post(self, request):
+        image_list = {}
+        for key, value in request.FILES.items():
+            saved_image = self.model.objects.create(
+                image = value
+            )
+            image_name = request.FILES[key].name
+            image_list[image_name] = saved_image.pk
         
-        # delete files saved in S3 bucket
-        if section_to_delete.post_type == 'photo':
-            try :
-                s3 = boto3.resource('s3')
-                s3.Object(os.environ.get('AWS_STORAGE_BUCKET_NAME'), section_to_delete.photo.name).delete()
-            except Exception as error:
-                raise error
-        
-        section_to_delete.delete()
-        return Response(data = f'delete blog section {section_id} successfully', status = status.HTTP_200_OK)
+        return Response(data = image_list, status = status.HTTP_200_OK)
+
 
 
