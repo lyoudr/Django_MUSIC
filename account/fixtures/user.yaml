@@ -1,7 +1,7 @@
 - model: auth.user
   pk: 2
   fields:
-    password: pbkdf2_sha256$216000$9yYAETsYCHBo$fNrlcf/95WXgxR4lS6tdgdraG96Mlhfm6QYc6vFxHlI=
+    password: pbkdf2_sha256$216000$zZDAEzAlmUEX$/uO6BqR4MstAv8HQSPNPtKqGiWiyOVdVkJl9hLSxIM8=
     last_login: 2021-03-19 01:48:52.116081+00:00
     is_superuser: false
     username: ann
@@ -16,7 +16,7 @@
 - model: auth.user
   pk: 3
   fields:
-    password: pbkdf2_sha256$216000$KGgongvQP6YZ$5VdvwkyAr7+ViP9j6UjlXQwYd/mMd1Z4Cv9cX62XKJk=
+    password: pbkdf2_sha256$216000$zZDAEzAlmUEX$/uO6BqR4MstAv8HQSPNPtKqGiWiyOVdVkJl9hLSxIM8=
     last_login: 2021-02-24 02:56:29.219661+00:00
     is_superuser: false
     username: john
