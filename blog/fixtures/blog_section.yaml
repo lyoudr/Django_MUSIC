@@ -1,41 +1,142 @@
 - model: blog.blogsection
-  pk: 1
-  fields:
-    blogpost: 1
-    order: 1
-    post_type: text
-    text: Weather Report was an American jazz fusion band active from 1970 to 1986.
-      The band was founded (and initially co-led) by Austrian keyboard player Joe
-      Zawinul, American saxophonist Wayne Shorter and Czech bassist Miroslav Vitouš.
-      Other prominent members at various points in the band's lifespan included Jaco
-      Pastorius, Alphonso Johnson, Victor Bailey, Chester Thompson, Peter Erskine,
-      Airto Moreira and Alex Acuna.
-    photo_id: null
-    video: null
-- model: blog.blogsection
-  pk: 2
-  fields:
-    blogpost: 1
-    order: 2
-    post_type: photo
-    text: null
-    photo_id: 1
-    video: null
-- model: blog.blogsection
   pk: 3
   fields:
     blogpost: 2
     order: 1
     post_type: text
-    text: A business report is a collection of data and analyses that helps make relevant information easily accessible to a company. There are many different types of business reports, but this guide will show you the basic outline.
-    photo_id: null
+    text: A business report is a collection of data and analyses that helps make relevant
+      information easily accessible to a company. There are many different types of
+      business reports, but this guide will show you the basic outline.
+    photo: null
     video: null
 - model: blog.blogsection
   pk: 4
   fields:
     blogpost: 2
     order: 2
+    post_type: text
+    text: JOHANNESBURG - The Department of Trade, Industry and Competition (dtic)
+      has released a Trade Policy Statement, which seeks to build industrial capacity
+      and drive manufacturing exports in the wake of the Covid-19 pandemic.
+    photo: null
+    video: null
+- model: blog.blogsection
+  pk: 11
+  fields:
+    blogpost: 15
+    order: 1
+    post_type: text
+    text: 'Welcome to IGN''s walkthrough of NieR: Automata. Here, you will be able
+      to jump to any mission you are currently struggling with and learn detailed
+      information about it. This guide will also give you a rundown of the events
+      that happen in NieR: Automata''s main story, as well as instructions on how
+      to complete each mission along the way.'
+    photo: null
+    video: null
+- model: blog.blogsection
+  pk: 12
+  fields:
+    blogpost: 15
+    order: 2
     post_type: photo
     text: null
-    photo_id: 2
+    photo: 12
+    video: null
+- model: blog.blogsection
+  pk: 13
+  fields:
+    blogpost: 15
+    order: 3
+    post_type: text
+    text: '2B is one of the protagonists and initial player character of the 2017
+      video game Nier: Automata. A humanoid combat android created as part of the
+      YoRHa squadron, her mission is to liberate Earth from hostile machine lifeforms
+      created by an unnamed'
+    photo: null
+    video: null
+- model: blog.blogsection
+  pk: 40
+  fields:
+    blogpost: 27
+    order: 1
+    post_type: text
+    text: The game is a spin-off from the Drakengard series, and follows the fifth
+      ending of the first game, the events of which have left the planet Earth in
+      a state of decay. Set over one thousand years after this, the game puts the
+      player in control of the protagonist as he attempts to find a cure for an illness,
+      known as the Black Scrawl, to which Yonah—either his sister or daughter, depending
+      on the version—has succumbed. Partnering with a talking book known as Grimoire
+      Weiss, he journeys with two other characters, Kainé and Emil, as he attempts
+      to find a remedy and understand the nature of the creatures known as Shades
+      that stalk the world. The gameplay borrows elements from various video game
+      genres, occasionally switching between them and the main role-playing-based
+      gameplay.
+    photo: null
+    video: null
+- model: blog.blogsection
+  pk: 41
+  fields:
+    blogpost: 27
+    order: 2
+    post_type: photo
+    text: null
+    photo: 50
+    video: null
+- model: blog.blogsection
+  pk: 42
+  fields:
+    blogpost: 27
+    order: 3
+    post_type: video
+    text: null
+    photo: null
+    video: https://www.youtube.com/embed/3wT1XVEfJ8o
+- model: blog.blogsection
+  pk: 44
+  fields:
+    blogpost: 2
+    order: 3
+    post_type: photo
+    text: null
+    photo: 56
+    video: null
+- model: blog.blogsection
+  pk: 45
+  fields:
+    blogpost: 28
+    order: 1
+    post_type: text
+    text: An anime television series was produced by Wit Studio (seasons 1–3) and
+      MAPPA (season 4). A 25-episode first season was broadcast from April to September
+      2013, followed by a 12-episode second season broadcast from April to June 2017.
+      A 22-episode third season was broadcast in two parts, with the first 12 episodes
+      airing from July to October 2018 and the last 10 episodes airing from April
+      to July 2019. A fourth and final season premiered in December 2020, airing 16
+      episodes in its first part, with the remainder announced to air in early 2022.
+    photo: null
+    video: null
+- model: blog.blogsection
+  pk: 46
+  fields:
+    blogpost: 28
+    order: 2
+    post_type: photo
+    text: null
+    photo: 57
+    video: null
+- model: blog.blogsection
+  pk: 47
+  fields:
+    blogpost: 28
+    order: 3
+    post_type: text
+    text: The plot of Attack on Titan centers on a civilization inside three walls,
+      the last location where humans still live. Over one hundred years ago, humanity
+      was driven to the brink of extinction after the emergence of humanoid giants
+      called Titans, who attack and eat humans on sight. The last remnants of humanity
+      retreated behind three concentric walls and enjoyed nearly a century of peace.
+      To combat Titans, the nation's military employs Vertical Maneuvering Equipment,
+      a set of waist-mounted grappling hooks and gas-powered propulsion enabling immense
+      mobility in three dimensions.
+    photo: null
     video: null

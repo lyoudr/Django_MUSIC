@@ -27,8 +27,6 @@ class Command(OriginCommand):
     
     def is_overwrite(self, obj):
         cur_model = obj.object.__class__
-        print('obj is =>', obj)
-        print('obj.object.id is =>', obj.object.id)
         cur_objs = cur_model.objects.filter(pk = obj.object.id)
         return True if self.force or not cur_objs.exists() else False
     

@@ -17,32 +17,50 @@ services :
 
 
   ann_server_1:
-    image : lyoudr/music_public:music_1
-    # have to write "healthcheck" 
-    healthcheck :
-      test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class/"]
-      timeout : 60s
-      retries : 10
-    # environment:
-    #   - ENV=prod 
-    #   - STATIC_ROOT=/music/static/
-    #   - DB_HOST=localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
-    #   - DB_NAME=music
-    #   - DB_USER=ann
-    #   - DB_PASSWORD=GxXynskDj134yi7P
-    #   - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
-    #   - AWS_SECRET_ACCESS_KEY=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
-    #   - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
+    
+    # image : lyoudr/music_public:music_1
+    
+    build:
+      context: .
+      dockerfile: Dockerfile.server
 
-    logging:
-        driver: awslogs
-        options: 
-          awslogs-group: tutorial
-          awslogs-region: ap-northeast-1
-          awslogs-stream-prefix: ann_server_1
+    # have to write "healthcheck" 
+    # healthcheck :
+    #   test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class/"]
+    #   timeout : 60s
+    #   retries : 10
+    
+    environment:
+      - ENV=prod 
+      - STATIC_ROOT=/music/static/
+      - DB_HOST=postgres_db #localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
+      - DB_NAME=music
+      - DB_USER=ann
+      - DB_PASSWORD=GxXynskDj134yi7P
+      - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
+
+    volumes:
+      - static-root:/music/static
+    
+    ports:
+      - 5000:5000
+      
+    # logging:
+    #     driver: awslogs
+    #     options: 
+    #       awslogs-group: tutorial
+    #       awslogs-region: ap-northeast-1
+    #       awslogs-stream-prefix: ann_server_1
 
   nginx :
-    image : lyoudr/nginx_public:latest
+
+    # image : lyoudr/nginx_public:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+
     healthcheck :
       test : ["CMD-SHELL", "nginx", "-t"]
       timeout : 60s
@@ -50,10 +68,16 @@ services :
     ports: 
       - 80:80
       - 443:443
+    
+    volumes:
+      - static-root:/tmp/static
+    
+    # logging:
+    #   driver: awslogs
+    #   options: 
+    #     awslogs-group: tutorial
+    #     awslogs-region: ap-northeast-1
+    #     awslogs-stream-prefix: nginx
 
-    logging:
-      driver: awslogs
-      options: 
-        awslogs-group: tutorial
-        awslogs-region: ap-northeast-1
-        awslogs-stream-prefix: nginx
+volumes:
+  static-root:

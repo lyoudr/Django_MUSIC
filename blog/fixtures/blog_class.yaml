@@ -1,9 +1,13 @@
 - model: blog.blogclass
   pk: 1
   fields:
-    name: "weather"
+    name: weather
 - model: blog.blogclass
   pk: 2
   fields:
-    name: "business"
+    name: business
+- model: blog.blogclass
+  pk: 3
+  fields:
+    name: anime
 

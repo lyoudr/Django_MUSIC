@@ -27,7 +27,7 @@ urlpatterns = [
         path('auth/', include('login.urls')),
         path('blog/', include('blog.urls')),
     ]))
-] 
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # language
 # urlpatterns += i18n_patterns(
@@ -42,7 +42,7 @@ urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {
         'document_root': settings.MEDIA_ROOT
     })
-]
+] 
 
 
 from rest_framework import permissions

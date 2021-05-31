@@ -1,20 +1,62 @@
 - model: blog.blogpost
-  pk: 1
-  fields:
-    user: 2
-    blogclass: 1
-    title: Weather report
-    photo: blog_photos/weather.jpeg
-    music_sheet: ''
-    description: Taipei Extended Forecast with high and low temperatures
-    created_time: 2021-03-19 01:38:35.136131+00:00
-- model: blog.blogpost
   pk: 2
   fields:
     user: 2
     blogclass: 2
     title: Business report
-    photo: blog_photos/business.jpeg
-    music_sheet: ''
-    description: Business Report
+    photo: blog_photos/sky.jpeg
+    music_sheet: blog_sheets/sample.pdf
+    description: Business Report Description
+    permission: 2
     created_time: 2021-03-19 01:38:35.136131+00:00
+- model: blog.blogpost
+  pk: 15
+  fields:
+    user: 2
+    blogclass: 1
+    title: Nier Automata
+    photo: blog_photos/nier_eMzoXA2.jpeg
+    music_sheet: blog_sheets/sample.pdf
+    description: 《NieR:Automata》訴說機器人 2B、9S 和 A2 的際遇，以及它們如何奪回受強大機器統治、一切靠機器驅動的反烏托邦世界。
+    permission: 2
+    created_time: 2021-05-23 03:26:55.264748+00:00
+- model: blog.blogpost
+  pk: 27
+  fields:
+    user: 2
+    blogclass: 3
+    title: Nier Replicant
+    photo: blog_photos/nier_replicant_v9itlCe.jpeg
+    music_sheet: blog_sheets/sample.pdf
+    description: An updated version of Replicant titled Nier Replicant ver.1.22474487139...
+      was announced in March 2020 as part of the 10th anniversary celebrations for
+      the series and is slated for a worldwide release for PlayStation 4, Xbox One,
+      and Windows.
+    permission: 2
+    created_time: 2021-05-24 02:24:15.300472+00:00
+- model: blog.blogpost
+  pk: 28
+  fields:
+    user: 2
+    blogclass: 3
+    title: Attack on Titan
+    photo: blog_photos/attack_on_titan.jpeg
+    music_sheet: blog_sheets/sample.pdf
+    description: 'Attack on Titan (Japanese: 進撃の巨人, Hepburn: Shingeki no Kyojin, lit.
+      "The Advancing Giants") is a Japanese manga series written..'
+    permission: 2
+    created_time: 2021-05-25 03:24:04.403839+00:00
+- model: blog.blogpost
+  pk: 29
+  fields:
+    user: 2
+    blogclass: 3
+    title: Death note
+    photo: blog_photos/death_note.jpeg
+    music_sheet: blog_sheets/sample.pdf
+    description: A 37-episode anime television series adaptation, produced by Madhouse
+      and directed by Tetsurō Araki, was broadcast in Japan on Nippon Television from
+      October 2006 to June 2007. A light novel based on the series, written by Nisio
+      Isin, was also
+    permission: 2
+    created_time: 2021-05-25 03:28:27.025174+00:00

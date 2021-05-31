@@ -1,12 +1,4 @@
 - model: blog.blogphoto
-  pk: 1
-  fields:
-    image: blog_photos/weather.jpeg
-- model: blog.blogphoto
-  pk: 2
-  fields:
-    image: blog_photos/art.jpeg
-- model: blog.blogphoto
   pk: 3
   fields:
     image: blog_photos/industry.jpg
@@ -14,3 +6,27 @@
   pk: 4
   fields:
     image: blog_photos/sky.jpg
+- model: blog.blogphoto
+  pk: 12
+  fields:
+    image: blog_photos/2b.jpeg
+- model: blog.blogphoto
+  pk: 14
+  fields:
+    image: blog_photos/re_LT9uWUW.jpeg
+- model: blog.blogphoto
+  pk: 50
+  fields:
+    image: blog_photos/re_7HG239v.jpeg
+- model: blog.blogphoto
+  pk: 51
+  fields:
+    image: blog_photos/weather_39ceuKN.jpeg
+- model: blog.blogphoto
+  pk: 56
+  fields:
+    image: blog_photos/business_uj04HU7.jpeg
+- model: blog.blogphoto
+  pk: 57
+  fields:
+    image: blog_photos/attack_on_titan_1.jpeg
