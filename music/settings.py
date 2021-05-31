@@ -208,7 +208,7 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 # Media static file
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/Users/ann.ke/Ann/music_storage/'
+MEDIA_ROOT = '/Users/ann.ke/Ann/music_server/music_server/music_storage/'
 
 # RDS 
 # master user name : ann

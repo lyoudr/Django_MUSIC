@@ -33,7 +33,7 @@ services :
     #   retries : 10
     
     environment:
-      - ENV=prod 
+      - ENV=local
       - STATIC_ROOT=/music/static/
       - DB_HOST=postgres_db #localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
       - DB_NAME=music
@@ -45,7 +45,7 @@ services :
 
     volumes:
       - static-root:/music/static
-    
+      - media-root:/music/music_storage
     ports:
       - 5000:5000
       
@@ -73,7 +73,7 @@ services :
     
     volumes:
       - static-root:/tmp/static
-    
+      - media-root:/tmp/media
     # logging:
     #   driver: awslogs
     #   options: 
@@ -83,3 +83,4 @@ services :
 
 volumes:
   static-root:
+  media-root:

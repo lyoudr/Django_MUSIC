@@ -1,5 +1,6 @@
 FROM nginx:1.19.6-alpine
 RUN mkdir -p ~/.docker
+COPY ./docker/nginx/music/. /tmp/frontend/
 COPY ./docker_config/config.json ~/.docker/config.json
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./docker/uwsgi/uwsgi_params /etc/nginx/uwsgi_params

@@ -14,6 +14,8 @@ WORKDIR /music
 COPY . /music/
 RUN mkdir -p ~/.docker
 RUN mkdir -p /music/static
+RUN mkdir -p /music/media
+
 # Docker login token is stored in config.json, so copy config.json to the folder where docker damean find its token.
 COPY ./docker_config/config.json ~/.docker/config.json 
 COPY ./docker/uwsgi/uwsgi.ini /music/uwsgi.ini
