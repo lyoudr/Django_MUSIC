@@ -71,15 +71,6 @@ docker push lyoudr/music_public:music_1
       - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
       - AWS_SECRET_ACCESS_KEY=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
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
-
-    links:
-      - postgres_db
-
-    restart : always
-    volumes : 
-      - static-content:/music/static
-      - media-content:/tmp/media
-
 ```
 
 ### 4. Add ecs-params.yml to define the memory and CPU usage of your container
@@ -89,26 +80,39 @@ docker push lyoudr/music_public:music_1
 
 ```
 version : 1
-task_definition : 
-  services :
-    nginx :
-      cpu_shares : 100
-      mem_limit : 300MB
+task_definition :
+  ecs_network_mode : awsvpc
+  task_execution_role : ecsTaskExecutionRole
+  task_size :
+    mem_limit : 0.5GB
+    cpu_limit : 256
+  services:
     postgres_db : 
-      cpu_shares : 100
+      cpu_shares : 80
       mem_limit : 300MB
+
     ann_server_1 :
-      cpu_shares : 100
+      cpu_shares : 80
       mem_limit : 300MB
-  docker_volumes :
-    - name : static-content
-      scope : "shared"
-      autoprovision : true
-      driver : "local"
-    - name : media-content
-      scope : "shared"
-      autoprovision : true
-      driver : "local"
+      # set "depends_on" in ecs-params instead of setting in docker-copmose.yml
+      depends_on : 
+        - container_name : postgres_db
+          condition : HEALTHY
+    nginx :
+      cpu_shares : 80
+      mem_limit : 300MB
+      depends_on:
+        - container_name : ann_server_1
+          condition : HEALTHY
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - "subnet ID 1"
+        - "subnet ID 2"
+      security_groups:
+        - "security group ID"
+      assign_public_ip : ENABLED
 ```
 
 -----
@@ -116,38 +120,65 @@ task_definition :
 
 This tutorial shows you how to set up a cluster and deploy a task using the EC2 launch type.
 
+### 1. Create the Task Execution IAM Role
+- Create a file namme "task-execution-assume-role.json" with the following contents:
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+- Create the task execution role:
+```
+aws iam --region ap-northeast-1 create-role --role-name ecsTaskExecutionRole --assume-role-policy-document file://task-execution-assume-role.json
+```
+- Attach the task execution role policy:
+```
+aws iam --region ap-northeast-1 attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+```
 
-### 1. Configure the AWS ECS CLI
+### 2. Configure the AWS ECS CLI
 
 - [Install ecs-cli](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
-- Create cluster configuration 
+- Create cluster configuration, which defines the AWS region to use, resource createtion prefixes, nd the cluster name to use with the Amazon ECS CLI:
 ```
-ecs-cli configure --cluster ec2-tutorial --default-launch-type EC2 --config-name ec2-tutorial --region us-west-2
+ecs-cli configure --cluster music --default-launch-type FARGATE --config-name music-config --region ap-northeast-1
 ```
 - Create a profile using your access key and secret key
 ```
-ecs-cli configure profile --access-key AWS_ACCESS_KEY_ID --secret-key AWS_SECRET_ACCESS_KEY --profile-name ec2-tutorial-profile
+ecs-cli configure profile --access-key AWS_ACCESS_KEY_ID --secret-key AWS_SECRET_ACCESS_KEY --profile-name music-profile
 ```
 
-### 2. Create Cluster
-```
-ecs-cli up --keypair id_rsa --capability-iam --size 1 --instance-type t2.micro--cluster-config ec2-tutorial --ecs-profile ec2-tutorial-profile
-```
+### 3. Create Cluster and Configure the Security Group
 
-### 3. Deploy the Compose File to a Cluster
-- go to the directory where your docker-compose.yml resides
-```
-ecs-cli compose up --create-log-groups --cluster-config ec2-tutorial --ecs-profile ec2-tutorial-profile
-```
-
-### 4. Create ECS Service from a Compose File
-
-- stop running container first
-```
-ecs-cli compose down --cluster-config ec2-tutorial --ecs-profile ec2-tutorial-profile
-```
-- create service using compose file
+- Because you specified Fargate as your default launch type in the cluster configuration, this command creates an empty cluster and a VPC configured with two public subnets.
 
 ```
-ecs-cli compose service up --cluster-config ec2-tutorial --ecs-profile ec2-tutorial-profile
+ecs-cli up --cluster-config music-config --ecs-profile music-profile
+```
+The output of this command contains the VPC and subnet IDs that are created. Take note of these IDs as they are used later.
+
+- Using the AWS CLI, retrieve the default security group ID for the VPC. Use the VPC ID from the previous output:
+```
+aws ec2 describe-security-groups --filters Name=vpc-id, Values=VPC_ID --region ap-northeast-1
+```
+
+- Using AWS CLI, add a security group rule to allow inbound access on port 80:
+```
+aws ec2 authorize-security-group-ingress --group-id security_group_id --protocol tcp --port 80 --cidr 0.0.0.0/0 --region ap-northeast-1
+```
+
+### 4. Deploy the Compose File to a Cluster
+- After you create the compose file, you can deploy it to your cluster with ecs-cli compose service up. By default, the command looks for files called **docker-compose.yml** and **ecs-params.yml** in the current directory
+```
+ecs-cli compose --project-name music service up --create-log-groups --cluster-config music-config --ecs-profile music-profile
 ```

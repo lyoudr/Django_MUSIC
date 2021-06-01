@@ -15,72 +15,50 @@ services :
       timeout : 30s
       retries : 3
 
-    ports:
-      - 5439:5432
-
   ann_server_1:
     
-    # image : lyoudr/music_public:music_1
-    
-    build:
-      context: .
-      dockerfile: Dockerfile.server
+    image : lyoudr/music_public:music_1
 
     # have to write "healthcheck" 
-    # healthcheck :
-    #   test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class/"]
-    #   timeout : 60s
-    #   retries : 10
+    healthcheck :
+      test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class"]
+      timeout : 60s
+      retries : 10
     
     environment:
       - ENV=local
       - STATIC_ROOT=/music/static/
-      - DB_HOST=postgres_db #localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
+      - DB_HOST=localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
       - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
       - AWS_SECRET_ACCESS_KEY=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
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
-
-    volumes:
-      - static-root:/music/static
-      - media-root:/music/music_storage
-    ports:
-      - 5000:5000
       
-    # logging:
-    #     driver: awslogs
-    #     options: 
-    #       awslogs-group: tutorial
-    #       awslogs-region: ap-northeast-1
-    #       awslogs-stream-prefix: ann_server_1
+    logging:
+        driver: awslogs
+        options: 
+          awslogs-group: tutorial
+          awslogs-region: ap-northeast-1
+          awslogs-stream-prefix: ann_server_1
 
   nginx :
 
-    # image : lyoudr/nginx_public:latest
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    image : lyoudr/nginx_public:latest
 
     healthcheck :
       test : ["CMD-SHELL", "nginx", "-t"]
       timeout : 60s
       retries : 10
+    
     ports: 
       - 80:80
       - 443:443
-    
-    volumes:
-      - static-root:/tmp/static
-      - media-root:/tmp/media
-    # logging:
-    #   driver: awslogs
-    #   options: 
-    #     awslogs-group: tutorial
-    #     awslogs-region: ap-northeast-1
-    #     awslogs-stream-prefix: nginx
 
-volumes:
-  static-root:
-  media-root:
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: tutorial
+        awslogs-region: ap-northeast-1
+        awslogs-stream-prefix: nginx
