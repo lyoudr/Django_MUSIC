@@ -16,7 +16,11 @@ services :
       retries : 3
 
   ann_server_1:
-    
+
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.server
+
     image : lyoudr/music_public:music_1
 
     # have to write "healthcheck" 
@@ -42,8 +46,14 @@ services :
           awslogs-group: tutorial
           awslogs-region: ap-northeast-1
           awslogs-stream-prefix: ann_server_1
+    volumes:
+      - music:/static-root
 
   nginx :
+
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.nginx
 
     image : lyoudr/nginx_public:latest
 
@@ -62,3 +72,6 @@ services :
         awslogs-group: tutorial
         awslogs-region: ap-northeast-1
         awslogs-stream-prefix: nginx
+
+volumes:
+  music:

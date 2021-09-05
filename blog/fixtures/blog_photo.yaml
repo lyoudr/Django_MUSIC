@@ -1,32 +1,32 @@
 - model: blog.blogphoto
-  pk: 3
+  pk: 1
   fields:
     image: blog_photos/industry.jpg
 - model: blog.blogphoto
-  pk: 4
+  pk: 2
   fields:
     image: blog_photos/sky.jpg
 - model: blog.blogphoto
-  pk: 12
+  pk: 3
   fields:
     image: blog_photos/2b.jpeg
 - model: blog.blogphoto
-  pk: 14
+  pk: 4
   fields:
-    image: blog_photos/re_LT9uWUW.jpeg
+    image: blog_photos/re.jpeg
 - model: blog.blogphoto
-  pk: 50
+  pk: 5
   fields:
-    image: blog_photos/re_7HG239v.jpeg
+    image: blog_photos/computer.jpeg
 - model: blog.blogphoto
-  pk: 51
+  pk: 6
   fields:
-    image: blog_photos/weather_39ceuKN.jpeg
+    image: blog_photos/weather.jpeg
 - model: blog.blogphoto
-  pk: 56
+  pk: 7
   fields:
-    image: blog_photos/business_uj04HU7.jpeg
+    image: blog_photos/art.jpeg
 - model: blog.blogphoto
-  pk: 57
+  pk: 8
   fields:
-    image: blog_photos/attack_on_titan_1.jpeg
+    image: blog_photos/piano.jpeg

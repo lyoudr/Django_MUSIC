@@ -9,6 +9,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
 
     def create(self, validated_data):
+        print('validated_data is =>', validated_data)
         user = User.objects.create_user(**validated_data)
         return user
 

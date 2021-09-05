@@ -1,7 +1,7 @@
 - model: blog.blogsection
-  pk: 3
+  pk: 1
   fields:
-    blogpost: 2
+    blogpost: 1
     order: 1
     post_type: text
     text: A business report is a collection of data and analyses that helps make relevant
@@ -10,9 +10,9 @@
     photo: null
     video: null
 - model: blog.blogsection
-  pk: 4
+  pk: 2
   fields:
-    blogpost: 2
+    blogpost: 1
     order: 2
     post_type: text
     text: JOHANNESBURG - The Department of Trade, Industry and Competition (dtic)
@@ -21,9 +21,9 @@
     photo: null
     video: null
 - model: blog.blogsection
-  pk: 11
+  pk: 3
   fields:
-    blogpost: 15
+    blogpost: 2
     order: 1
     post_type: text
     text: 'Welcome to IGN''s walkthrough of NieR: Automata. Here, you will be able
@@ -34,18 +34,18 @@
     photo: null
     video: null
 - model: blog.blogsection
-  pk: 12
+  pk: 4
   fields:
-    blogpost: 15
+    blogpost: 2
     order: 2
     post_type: photo
     text: null
-    photo: 12
+    photo: 1
     video: null
 - model: blog.blogsection
-  pk: 13
+  pk: 5
   fields:
-    blogpost: 15
+    blogpost: 2
     order: 3
     post_type: text
     text: '2B is one of the protagonists and initial player character of the 2017
@@ -55,9 +55,9 @@
     photo: null
     video: null
 - model: blog.blogsection
-  pk: 40
+  pk: 6
   fields:
-    blogpost: 27
+    blogpost: 3
     order: 1
     post_type: text
     text: The game is a spin-off from the Drakengard series, and follows the fifth
@@ -74,36 +74,36 @@
     photo: null
     video: null
 - model: blog.blogsection
-  pk: 41
+  pk: 7
   fields:
-    blogpost: 27
+    blogpost: 3
     order: 2
     post_type: photo
     text: null
-    photo: 50
+    photo: 2
     video: null
 - model: blog.blogsection
-  pk: 42
+  pk: 8
   fields:
-    blogpost: 27
+    blogpost: 3
     order: 3
     post_type: video
     text: null
     photo: null
     video: https://www.youtube.com/embed/3wT1XVEfJ8o
 - model: blog.blogsection
-  pk: 44
+  pk: 9
   fields:
-    blogpost: 2
-    order: 3
+    blogpost: 4
+    order: 1
     post_type: photo
     text: null
-    photo: 56
+    photo: 3
     video: null
 - model: blog.blogsection
-  pk: 45
+  pk: 10
   fields:
-    blogpost: 28
+    blogpost: 5
     order: 1
     post_type: text
     text: An anime television series was produced by Wit Studio (seasons 1–3) and
@@ -116,18 +116,18 @@
     photo: null
     video: null
 - model: blog.blogsection
-  pk: 46
+  pk: 11
   fields:
-    blogpost: 28
+    blogpost: 5
     order: 2
     post_type: photo
     text: null
-    photo: 57
+    photo: 4
     video: null
 - model: blog.blogsection
-  pk: 47
+  pk: 12
   fields:
-    blogpost: 28
+    blogpost: 5
     order: 3
     post_type: text
     text: The plot of Attack on Titan centers on a civilization inside three walls,

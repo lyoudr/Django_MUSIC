@@ -1,5 +1,5 @@
 - model: auth.user
-  pk: 2
+  pk: 1
   fields:
     password: pbkdf2_sha256$216000$zZDAEzAlmUEX$/uO6BqR4MstAv8HQSPNPtKqGiWiyOVdVkJl9hLSxIM8=
     last_login: 2021-03-19 01:48:52.116081+00:00
@@ -14,7 +14,7 @@
     groups: []
     user_permissions: []
 - model: auth.user
-  pk: 3
+  pk: 2
   fields:
     password: pbkdf2_sha256$216000$zZDAEzAlmUEX$/uO6BqR4MstAv8HQSPNPtKqGiWiyOVdVkJl9hLSxIM8=
     last_login: 2021-02-24 02:56:29.219661+00:00
@@ -29,12 +29,12 @@
     groups: []
     user_permissions: []
 - model: account.userrole
-  pk: 6
+  pk: 1
   fields:
-    user: 3
+    user: 1
     role: 1
 - model: account.userrole
-  pk: 8
+  pk: 2
   fields:
     user: 2
     role: 2

@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class UserRole(models.Model):
+    class Meta:
+        db_table = 'USER_ROLE'
+        
     ROLES = [
         (1, 'admin'),
         (2, 'manager'),

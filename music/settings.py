@@ -16,9 +16,9 @@ from datetime import timedelta
 import os
 import environ
 
-env = environ.Env(
-    DEBUG=(bool, True)
-)
+# env = environ.Env(
+#     DEBUG=(bool, True)
+# )
 # reading .env file
 environ.Env.read_env()
 
@@ -97,7 +97,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'music.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

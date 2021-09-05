@@ -6,12 +6,18 @@ import django.utils.timezone as timezone
 
 
 class BlogClass(models.Model):
+    class Meta:
+        db_table = 'BLOG_CLASS'
+
     name = models.CharField(max_length = 255, unique = True)
 
     def __str__(self):
         return self.name
 
 class BlogPhoto(models.Model):
+    class Meta:
+        db_table = 'BLOG_PHOTO'
+
     image = models.FileField(upload_to = 'blog_photos', storage = select_storage)
 
     def __str__(self):
@@ -23,6 +29,9 @@ class BlogPhoto(models.Model):
     
 
 class BlogPost(models.Model):
+    class Meta:
+        db_table = 'BLOG_POST'
+
     user = models.ForeignKey(User, on_delete = models.CASCADE, default = 2)
     blogclass = models.ForeignKey(BlogClass, on_delete = models.CASCADE)
     title = models.CharField(max_length = 255)
@@ -42,6 +51,9 @@ class BlogPost(models.Model):
 
 
 class BlogSection(models.Model):
+    class Meta:
+        db_table = 'BLOG_SECTION'
+        
     blogpost = models.ForeignKey(BlogPost, on_delete = models.CASCADE, related_name = 'blog_section')
     order = models.IntegerField()
     post_type = models.CharField(max_length = 255, choices = (
