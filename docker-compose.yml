@@ -17,9 +17,9 @@ services :
 
   ann_server_1:
 
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile.server
+    build:
+      context: .
+      dockerfile: Dockerfile.server
 
     image : lyoudr/music_public:music_1
 
@@ -32,7 +32,7 @@ services :
     environment:
       - ENV=local
       - STATIC_ROOT=/music/static/
-      - DB_HOST=localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
+      - DB_HOST=postgres_db # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
@@ -40,22 +40,22 @@ services :
       - AWS_SECRET_ACCESS_KEY=C4LnN7bgf+6bD5prZ2YFNlRXarANLKMERZT0b1jj
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
       
-    logging:
-        driver: awslogs
-        options: 
-          awslogs-group: tutorial
-          awslogs-region: ap-northeast-1
-          awslogs-stream-prefix: ann_server_1
+    # logging:
+    #     driver: awslogs
+    #     options: 
+    #       awslogs-group: tutorial
+    #       awslogs-region: ap-northeast-1
+    #       awslogs-stream-prefix: ann_server_1
     volumes:
-      - music:/static-root
+      - music:/music/static-root
 
   nginx :
 
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile.nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
 
-    image : lyoudr/nginx_public:latest
+    # image : lyoudr/nginx_public:latest
 
     healthcheck :
       test : ["CMD-SHELL", "nginx", "-t"]
@@ -65,13 +65,15 @@ services :
     ports: 
       - 80:80
       - 443:443
-
-    logging:
-      driver: awslogs
-      options: 
-        awslogs-group: tutorial
-        awslogs-region: ap-northeast-1
-        awslogs-stream-prefix: nginx
+    
+    volumes:
+      - music:/tmp/static
+    # logging:
+    #   driver: awslogs
+    #   options: 
+    #     awslogs-group: tutorial
+    #     awslogs-region: ap-northeast-1
+    #     awslogs-stream-prefix: nginx
 
 volumes:
   music:

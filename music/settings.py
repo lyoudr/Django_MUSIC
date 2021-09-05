@@ -25,7 +25,7 @@ environ.Env.read_env()
 ENV = os.environ.get('ENV').lower()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -202,12 +202,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 # Django static files
-STATIC_URL = '/static/'
-STATIC_ROOT = os.environ.get('STATIC_ROOT')
-
+STATIC_URL = '/static-root/'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'music/static-root')
+print('STATIC_ROOT is =>', STATIC_ROOT)
 # Media static file
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/Users/ann.ke/Ann/music_server/music_server/music_storage/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'music/media-root')
 
 # RDS 
 # master user name : ann
