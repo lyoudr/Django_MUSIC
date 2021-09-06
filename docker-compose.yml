@@ -17,22 +17,22 @@ services :
 
   ann_server_1:
 
-    build:
-      context: .
-      dockerfile: Dockerfile.server
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.server
 
     image : lyoudr/music_public:music_1
 
     # have to write "healthcheck" 
     healthcheck :
-      test : ["CMD-SHELL", "curl -i GET http://localhost:5000/api/blog/class"]
+      test : ["CMD-SHELL", "uwsgi_curl -X GET localhost:5000 /api/blog/class"]
       timeout : 60s
       retries : 10
     
     environment:
       - ENV=local
       - STATIC_ROOT=/music/static/
-      - DB_HOST=postgres_db # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
+      - DB_HOST=localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
@@ -40,22 +40,24 @@ services :
       - AWS_SECRET_ACCESS_KEY=C4LnN7bgf+6bD5prZ2YFNlRXarANLKMERZT0b1jj
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
       
-    # logging:
-    #     driver: awslogs
-    #     options: 
-    #       awslogs-group: tutorial
-    #       awslogs-region: ap-northeast-1
-    #       awslogs-stream-prefix: ann_server_1
+    logging:
+        driver: awslogs
+        options: 
+          awslogs-group: tutorial
+          awslogs-region: ap-northeast-1
+          awslogs-stream-prefix: ann_server_1
+
     volumes:
       - music:/music/static-root
+      - music:/tmp/uwsgi.sock
 
   nginx :
 
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.nginx
 
-    # image : lyoudr/nginx_public:latest
+    image : lyoudr/nginx_public:latest
 
     healthcheck :
       test : ["CMD-SHELL", "nginx", "-t"]
@@ -68,12 +70,14 @@ services :
     
     volumes:
       - music:/tmp/static
-    # logging:
-    #   driver: awslogs
-    #   options: 
-    #     awslogs-group: tutorial
-    #     awslogs-region: ap-northeast-1
-    #     awslogs-stream-prefix: nginx
+      - music:/tmp/uwsgi.sock
+
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: tutorial
+        awslogs-region: ap-northeast-1
+        awslogs-stream-prefix: nginx
 
 volumes:
   music:

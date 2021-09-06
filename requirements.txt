@@ -29,3 +29,6 @@ celery==5.0.5
 
 # redis
 redis==3.5.3
+
+# uwsgi_tools
+uwsgi-tools==1.1.1

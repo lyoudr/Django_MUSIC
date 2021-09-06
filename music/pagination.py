@@ -14,7 +14,7 @@ class CustomNumberPagination(PageNumberPagination):
                 'previous': self.get_previous_link()
             },
             'total': self.page.paginator.count,
-            'page': int(self.request.GET.get('page', None)),
-            'page_size': int(self.request.GET.get('page_size', None)),
+            'page': int(self.request.GET.get('page', '1')),
+            'page_size': int(self.request.GET.get('page_size', '5')),
             'data': data
         })

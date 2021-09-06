@@ -27,7 +27,7 @@ task_definition :
           condition : HEALTHY
     nginx :
       cpu_shares : 80
-      mem_limit : 300MB
+      mem_limit : 400MB
       depends_on:
         - container_name : ann_server_1
           condition : HEALTHY
