@@ -49,7 +49,6 @@ services :
 
     volumes:
       - music:/music/static-root
-      - music:/tmp/uwsgi.sock
 
   nginx :
 
@@ -70,7 +69,6 @@ services :
     
     volumes:
       - music:/tmp/static
-      - music:/tmp/uwsgi.sock
 
     logging:
       driver: awslogs
