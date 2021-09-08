@@ -182,3 +182,14 @@ aws ec2 authorize-security-group-ingress --group-id security_group_id --protocol
 ```
 ecs-cli compose --project-name music service up --create-log-groups --cluster-config music-config --ecs-profile music-profile
 ```
+
+- Deploy compose file with Elastic Load Balancer (application load balancer) created before , --target-group-arn (enter the target group arn in this load balancer)
+```
+ecs-cli compose --project-name music service up --cluster-config music --ecs-profile music --target-group-arn arn:aws:elasticloadbalancing:ap-northeast-1:520106466788:targetgroup/music/302aa40515d42364 --container-name nginx --container-port 80
+```
+
+- Scale the Tasks on the Cluster
+You can scale up your task count to increase the number of instances of your application with ecs-cli compose service scale.
+```
+ecs-cli compose --project-name music service scale 2 --cluster-config music --ecs-profile music
+```
