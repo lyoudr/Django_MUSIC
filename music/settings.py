@@ -203,12 +203,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 # Django static files
 STATIC_URL = '/static-root/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'music/static-root')
+STATIC_ROOT = '/music/static-root' #os.environ.get('STATIC_ROOT')
 print('STATIC_ROOT is =>', STATIC_ROOT)
+
 # Media static file
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'music/media-root')
-
+MEDIA_ROOT = '/music/media' #os.environ.get('MEDIA_ROOT')
+print('MEDIA_ROOT is =>', MEDIA_ROOT)
 # RDS 
 # master user name : ann
 # master password : GxXynskDj134yi7P

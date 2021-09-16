@@ -11,7 +11,15 @@ task_definition :
       filesystem_id: "fs-1270e132"
       root_directory: /
       transit_encryption: ENABLED
+      transit_encryption_port: 2049
       access_point: "fsap-05ccc3429c1d9f644"
+      iam: DISABLED
+    - name: "media"
+      filesystem_id: "fs-e565f6c5"
+      root_directory: /
+      transit_encryption: ENABLED
+      transit_encryption_port: 2050
+      access_point: "fsap-05c4f9a0100454bef"
       iam: DISABLED
   services:
     postgres_db : 

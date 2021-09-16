@@ -4,7 +4,6 @@ ENV PYTHONUNBUFFERED 1
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 
 ENV ENV=$ENV
-ENV STATIC_ROOT=/music/static/
 ENV DB_NAME=$DB_NAME
 ENV DB_USER=$DB_USER
 ENV DB_PASSWORD=$DB_PASSWORD
@@ -13,8 +12,8 @@ ENV DB_HOST=$DB_HOST
 WORKDIR /music
 COPY . /music/
 RUN mkdir -p ~/.docker
-RUN mkdir -p /music/static
 RUN mkdir -p /music/media
+COPY ./music_storage/ /music/media/
 
 # Docker login token is stored in config.json, so copy config.json to the folder where docker damean find its token.
 COPY ./docker_config/config.json ~/.docker/config.json 

@@ -16,5 +16,4 @@ class RemoteStorage(S3Boto3Storage):
 
 
 def select_storage():
-    print(settings.ENV)
     return LocalStaorge() if settings.ENV == 'local' else RemoteStorage()

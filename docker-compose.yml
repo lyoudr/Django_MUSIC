@@ -31,7 +31,6 @@ services :
     
     environment:
       - ENV=local
-      - STATIC_ROOT=/music/static/
       - DB_HOST=localhost # have to use "localhost" to refer to host when "ecs_network_mode" is "awsvpc" 
       - DB_NAME=music
       - DB_USER=ann
@@ -49,6 +48,7 @@ services :
 
     volumes:
       - music:/music/static-root
+      - media:/music/media
 
   nginx :
 
@@ -68,7 +68,8 @@ services :
       - 443:443
     
     volumes:
-      - music:/tmp/static
+      - music:/tmp/static-root
+      - media:/tmp/media
 
     logging:
       driver: awslogs
@@ -79,3 +80,4 @@ services :
 
 volumes:
   music:
+  media:
