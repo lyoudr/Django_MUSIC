@@ -22,7 +22,7 @@ import environ
 # reading .env file
 environ.Env.read_env()
 
-ENV = os.environ.get('ENV').lower()
+ENV = os.getenv('ENV')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -103,11 +103,11 @@ WSGI_APPLICATION = 'music.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'), # 'music',
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'NAME': os.getenv('DB_NAME'), # 'music',
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 
-            os.environ.get('DB_HOST'), # docker-compose 
+            os.getenv('DB_HOST'), # docker-compose 
             # Use RDS => 'music.cfdhrxxmggjd.ap-northeast-1.rds.amazonaws.com',
             # 'music.cfdhrxxmggjd.ap-northeast-1.rds.amazonaws.com',
         'PORT': '5432',
@@ -203,12 +203,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 # Django static files
 STATIC_URL = '/static-root/'
-STATIC_ROOT = '/music/static-root' #os.environ.get('STATIC_ROOT')
+STATIC_ROOT = os.getenv('STATIC_ROOT') #'/music/static-root' 
 print('STATIC_ROOT is =>', STATIC_ROOT)
 
 # Media static file
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/music/media' #os.environ.get('MEDIA_ROOT')
+MEDIA_ROOT = os.getenv('MEDIA_ROOT') #'/music/media'
 print('MEDIA_ROOT is =>', MEDIA_ROOT)
 # RDS 
 # master user name : ann
@@ -224,10 +224,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 # S3 storage
 # below is the access key and secret access key of IAM user "for-s3"
-if ENV == 'local':
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+# if ENV == 'local':
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+
+print('AWS_STORAGE_BUCKET_NAME is =>', AWS_STORAGE_BUCKET_NAME)
 
 
 # Email

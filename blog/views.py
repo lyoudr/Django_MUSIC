@@ -68,6 +68,7 @@ class BlogClassView(GenericAPIView):
 
 
         blog_classes = self.get_queryset()
+        print('blog_classes is =>', blog_classes)
         pg_data = self.paginate_queryset(blog_classes)
         
         if blog_classes:

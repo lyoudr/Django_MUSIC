@@ -13,6 +13,7 @@ class UserRole(models.Model):
         (3, 'normal_member'),
         (4, 'vip_member')
     ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.IntegerField(
         choices = ROLES,

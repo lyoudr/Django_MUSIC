@@ -31,10 +31,10 @@
 - model: account.userrole
   pk: 1
   fields:
-    user: 1
+    user_id: 1
     role: 1
 - model: account.userrole
   pk: 2
   fields:
-    user: 2
+    user_id: 2
     role: 2

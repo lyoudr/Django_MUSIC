@@ -6,21 +6,27 @@ task_definition :
   task_size :
     mem_limit : 0.5GB
     cpu_limit : 256
-  efs_volumes :
-    - name: "music"
-      filesystem_id: "fs-1270e132"
-      root_directory: /
-      transit_encryption: ENABLED
-      transit_encryption_port: 2049
-      access_point: "fsap-05ccc3429c1d9f644"
-      iam: DISABLED
-    - name: "media"
-      filesystem_id: "fs-e565f6c5"
-      root_directory: /
-      transit_encryption: ENABLED
-      transit_encryption_port: 2050
-      access_point: "fsap-05c4f9a0100454bef"
-      iam: DISABLED
+  docker_voluems:
+    - name: media
+      scope: shared
+      driver: local
+      driver_opts:
+        type: nfs
+        device: fs-7d9f015d.efs.ap-northeast-1.amazonaws.com:/
+        o: addr=fs-7d9f015d.efs.ap-northeast-1.amazonaws.com,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport
+  # efs_volumes :
+    # - name: "music"
+    #   filesystem_id: "fs-1270e132"
+    #   root_directory: /
+    #   transit_encryption: ENABLED
+    #   access_point: "fsap-05ccc3429c1d9f644"
+    #   iam: DISABLED
+    # - name: media
+    #   filesystem_id: fs-039c0223
+    #   root_directory: /
+    #   transit_encryption: ENABLED
+    # access_point: fsap-0ecd2b007a220a52b
+    # iam: DISABLED
   services:
     postgres_db : 
       cpu_shares : 80
