@@ -22,8 +22,8 @@ Architecture diagram
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
-      - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
-      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
     links:
       - postgres_db
@@ -68,8 +68,8 @@ docker push lyoudr/music_public:music_1
       - DB_NAME=music
       - DB_USER=ann
       - DB_PASSWORD=GxXynskDj134yi7P
-      - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSBLLMV4JY
-      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
       - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
 ```
 
