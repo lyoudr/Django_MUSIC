@@ -21,3 +21,16 @@ class UserRole(models.Model):
 
     def __str__(self):
         return f'role_{self.role}'
+
+
+class BankInfo(models.Model):
+    class Meta:
+        db_table = 'BANK_INFO'
+
+    user = models.ForeignKey(User, on_delete = models.CASCADE, null = True, related_name = 'trade_info')
+    bank_name = models.CharField(max_length = 50)
+    bank_no = models.CharField(max_length = 50)
+    bank_account_no = models.CharField(max_length = 50)
+
+    def __str__(self):
+        return f'{self.bank_name}-{self.bank_no}'

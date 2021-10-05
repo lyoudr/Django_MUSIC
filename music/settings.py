@@ -61,7 +61,12 @@ INSTALLED_APPS = [
     'account', 
     'login',
     'blog',
-    'rest_framework'
+    'product',
+    'order',
+    'sysdata',
+    'rest_framework',
+    # extension
+    'django_extensions',
 
 ]
 
@@ -132,7 +137,7 @@ REST_FRAMEWORK = {
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME' : timedelta(days = 1),
     'REFRESH_TOKEN_LIFETIME' : timedelta(days = 1),
     'ROTATE_REFRESH_TOKENS' : True,
     'BLACKLIST_AFTER_ROTATION' : True,
@@ -204,12 +209,12 @@ USE_TZ = True
 # Django static files
 STATIC_URL = '/static-root/'
 STATIC_ROOT = os.getenv('STATIC_ROOT') #'/music/static-root' 
-print('STATIC_ROOT is =>', STATIC_ROOT)
+
 
 # Media static file
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.getenv('MEDIA_ROOT') #'/music/media'
-print('MEDIA_ROOT is =>', MEDIA_ROOT)
+
 # RDS 
 # master user name : ann
 # master password : GxXynskDj134yi7P

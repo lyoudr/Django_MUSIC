@@ -135,7 +135,6 @@ class BlogPostView(GenericAPIView):
         b_class = request.GET.get('class', None)
 
         posts = self.get_queryset().filter(permission = 2).order_by('created_time')
-        
         if b_class:
             posts = posts.filter(blogclass_id__in = [class_x for class_x in b_class.split(',')])
         
@@ -294,7 +293,6 @@ class BlogPostUserView(GenericAPIView):
         ]
     )
     def post(self, request):
-        
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -464,7 +462,6 @@ class BlogSectionView(GenericAPIView):
         )
     )
     def post(self, request):
-        print('request.data is =>', request.data)
         serializer = self.serializer_class(data = request.data)
         serializer.is_valid(raise_exception = True)
         serializer.save()

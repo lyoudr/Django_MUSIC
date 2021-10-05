@@ -98,7 +98,6 @@ class LogInView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid(raise_exception=True):
-            print('serializer.data is =>', serializer.data)
             user = authenticate(
                 request, 
                 username = serializer.data.get('username', ''), 

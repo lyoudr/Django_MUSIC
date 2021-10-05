@@ -1,7 +1,7 @@
 FROM nginx:stable
 RUN mkdir -p ~/.docker
-RUN mkdir -p /usr/media
-COPY ./music_storage/. /usr/media/.
+# RUN mkdir -p /usr/media
+# COPY ./music_storage/. /usr/media/.
 COPY ./docker_config/config.json ~/.docker/config.json
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./docker/uwsgi/uwsgi_params /etc/nginx/uwsgi_params
