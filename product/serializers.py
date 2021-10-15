@@ -1,7 +1,6 @@
 from product.models import Product
 
 from rest_framework import serializers
-from rest_framework import status
 
 class ProductSerializer(serializers.ModelSerializer):
     product_id = serializers.SerializerMethodField()

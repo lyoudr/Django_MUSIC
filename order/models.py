@@ -53,13 +53,20 @@ class OrderInfo(models.Model):
     class Meta:
         db_table = 'ORDER_INFO'
     
-    order = models.ForeignKey(Order, on_delete = models.CASCADE, related_name = 'order_info_a')
+    order = models.ForeignKey(Order, on_delete = models.CASCADE, related_name = 'order_info_a', null = True)
     product = models.ForeignKey(Product, on_delete = models.CASCADE, related_name = 'order_info_b')
     count = models.IntegerField(default = 1)
-    price = models.IntegerField()
+    price = models.IntegerField() # 此筆 orderinfo 的總價 = product.price * count
+    order_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = 'order_info_c', default = 1) # 放入購物車的人
 
     def __str__(self):
-        return f'{self.order.order_no}-{self.product.product_no}'
+        order_no = self.order.order_no if self.order else ''
+        return f'{order_no}-{self.product.product_no}'
+    
+    def save(self, *args, **kwargs):
+        if self.price is None:
+            self.price = self.product.price * self.count
+        super(OrderInfo, self).save(*args, **kwargs)
     
 
     

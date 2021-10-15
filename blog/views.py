@@ -68,7 +68,6 @@ class BlogClassView(GenericAPIView):
 
 
         blog_classes = self.get_queryset()
-        print('blog_classes is =>', blog_classes)
         pg_data = self.paginate_queryset(blog_classes)
         
         if blog_classes:
@@ -293,10 +292,11 @@ class BlogPostUserView(GenericAPIView):
         ]
     )
     def post(self, request):
-        serializer = self.serializer_class(data = request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(data = serializer.data, status = status.HTTP_200_OK)
+        with transaction.atomic():
+            serializer = self.serializer_class(data = request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(data = serializer.data, status = status.HTTP_200_OK)
 
 
     @swagger_auto_schema(
@@ -363,15 +363,15 @@ class BlogPostUserView(GenericAPIView):
                 return_message = 'can not find blog',
                 status_code = status.HTTP_404_NOT_FOUND
             )
-
-        serializer = self.serializer_class(
-            post_to_update,
-            data = request.data,
-            partial = True
-        )
-        serializer.is_valid(raise_exception = True)
-        serializer.save()
-        return Response(data = serializer.data, status = status.HTTP_200_OK)
+        with transaction.atomic():
+            serializer = self.serializer_class(
+                post_to_update,
+                data = request.data,
+                partial = True
+            )
+            serializer.is_valid(raise_exception = True)
+            serializer.save()
+            return Response(data = serializer.data, status = status.HTTP_200_OK)
 
 
     @swagger_auto_schema(
@@ -462,10 +462,11 @@ class BlogSectionView(GenericAPIView):
         )
     )
     def post(self, request):
-        serializer = self.serializer_class(data = request.data)
-        serializer.is_valid(raise_exception = True)
-        serializer.save()
-        return Response(data = serializer.data, status = status.HTTP_200_OK)
+        with transaction.atomic():
+            serializer = self.serializer_class(data = request.data)
+            serializer.is_valid(raise_exception = True)
+            serializer.save()
+            return Response(data = serializer.data, status = status.HTTP_200_OK)
 
 
 class BlogSectionManageView(APIView):

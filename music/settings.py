@@ -40,7 +40,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:4200'
+    'http://localhost:4200',
+    "http://d3k8ol7n6l3cth.cloudfront.net"
 ]
 
 # Application definition

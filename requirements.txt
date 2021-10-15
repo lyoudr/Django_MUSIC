@@ -1,4 +1,5 @@
 # postgresql
+psycopg2==2.8.4
 psycopg2-binary==2.8.6
 
 # ipython
@@ -23,6 +24,8 @@ django-storages==1.11.1
 
 # simple jwt
 djangorestframework-simplejwt==4.6.0
+Pillow==8.2.0
+PyJWT==1.7.1
 
 # celery
 celery==5.0.5
@@ -32,3 +35,6 @@ redis==3.5.3
 
 # uwsgi_tools
 uwsgi-tools==1.1.1
+
+# django-extensions
+django-extensions==3.1.3

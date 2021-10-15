@@ -7,7 +7,7 @@ from product.models import Product
 from product.serializers import ProductSerializer
 
 from rest_framework.generics import GenericAPIView
-from rest_framework import serializers, status
+from rest_framework import status
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
