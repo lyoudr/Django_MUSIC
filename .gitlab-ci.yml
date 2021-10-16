@@ -1,39 +1,45 @@
 
 stages :
   - build
-  - deploy 
+  # - deploy 
 
-variables :
-  CLUSTER : "tutorial"
-  PROJECT_NAME : "tutorial"
-  CLUSTER_CONFIG : "tutorial"
-  ECS_PROFILE : "tutorial-profile"
+# variables :
+#   CLUSTER : "tutorial"
+#   PROJECT_NAME : "tutorial"
+#   CLUSTER_CONFIG : "tutorial"
+#   ECS_PROFILE : "tutorial-profile"
   
-  DOCKER_HUB_PASSWD : $DOCKER_HUB_PASSWD
-  AWS_DEFAULT_REGION : $AWS_DEFAULT_REGION
-  AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
+#   DOCKER_HUB_PASSWD : $DOCKER_HUB_PASSWD
+#   AWS_DEFAULT_REGION : $AWS_DEFAULT_REGION
+#   AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
 
-  # ENV using by Django server
-  AWS_STORAGE_BUCKET_NAME : $AWS_STORAGE_BUCKET_NAME
-  ENV : $ENV
-  STATIC_ROOT : $STATIC_ROOT
-  DB_NAME : $DB_NAME
-  DB_USER : $DB_USER
-  DB_PASSWORD : $DB_PASSWORD
-  DB_HOST : $DB_HOST
+#   # ENV using by Django server
+#   AWS_STORAGE_BUCKET_NAME : $AWS_STORAGE_BUCKET_NAME
+#   ENV : $ENV
+#   STATIC_ROOT : $STATIC_ROOT
+#   DB_NAME : $DB_NAME
+#   DB_USER : $DB_USER
+#   DB_PASSWORD : $DB_PASSWORD
+#   DB_HOST : $DB_HOST
+
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
   stage : build
   image : docker:19.03
   script :
-    # - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
-
-    - docker build -f Dockerfile.nginx -t nginx:latest .
+    - docker login --username lyoudr --password $DOCKER_HUB_PASSWD
+    
+    # build nginx
+    - >-
+      docker build 
+      -f Dockerfile.nginx 
+      -t nginx:latest .
     - docker tag nginx:latest lyoudr/nginx_public:latest
     - docker push lyoudr/nginx_public:latest
 
+    # build server
     - >- 
       docker build 
       -f Dockerfile.server 
@@ -50,45 +56,30 @@ job_build_template :
     - docker tag music_server:latest lyoudr/music_public:music_1 
     - docker push lyoudr/music_public:music_1
     - docker logout $DOCKER_HUB_PASSWD
+
   only :
    - ecs_fargate
   tags : 
    - ann
 
 # Need to create cluster by hand , and use ecs-cli command to deploy docker-compose file to AWS ECS Fargate here.
-job_deploy_template :
-  stage : deploy
-  image : 
-    name : amazon/aws-cli
-    entrypoint : [""]
-  before_script :
-    - aws configure set region $AWS_DEFAULT_REGION
-    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-  script :
-    - >-
-      ecs-cli compose --project-name $PROJECT_NAME service up --create-log-groups 
-      --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
-    - >- 
-      ecs-cli compose --project-name $PROJECT_NAME service ps --cluster-config $CLUSTER_CONFIG
-      --ecs-profile $ECS_PROFILE
-  only :
-   - ecs_fargate
-  tags : 
-   - ann
-
-# build :
-#   extends : .job_build_template
-#   stage : build
-#   only :
-#     - ecs_fargate
-#   tags :
-#     - ann
-
-# deploy :
-#   extends : .job_deploy_template
+# job_deploy_template :
 #   stage : deploy
-#   only : 
-#     - ecs_fargate
+#   image : 
+#     name : amazon/aws-cli
+#     entrypoint : [""]
+#   before_script :
+#     - aws configure set region $AWS_DEFAULT_REGION
+#     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+#     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+#   script :
+#     - >-
+#       ecs-cli compose --project-name $PROJECT_NAME service up --create-log-groups 
+#       --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
+#     - >- 
+#       ecs-cli compose --project-name $PROJECT_NAME service ps --cluster-config $CLUSTER_CONFIG
+#       --ecs-profile $ECS_PROFILE
+#   only :
+#    - ecs_fargate
 #   tags : 
-#     - ann
+#    - ann
