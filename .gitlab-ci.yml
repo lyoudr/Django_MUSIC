@@ -29,6 +29,7 @@ job_build_template :
   stage : build
   image : docker:19.03
   script :
+    - echo $DOCKER_USERNAME
     - docker login --username $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD
     
     # build nginx
