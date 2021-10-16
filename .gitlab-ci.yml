@@ -29,7 +29,7 @@ job_build_template :
   stage : build
   image : docker:19.03
   script :
-    - docker login --username lyoudr --password-stdin $DOCKER_HUB_PASSWD
+    - docker login --username lyoudr --password-stdin Awdxa48624
     
     # build nginx
     - >-
