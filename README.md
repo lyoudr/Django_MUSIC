@@ -193,3 +193,30 @@ You can scale up your task count to increase the number of instances of your app
 ```
 ecs-cli compose --project-name music service scale 2 --cluster-config music --ecs-profile music
 ```
+
+
+
+### 5. Create ECS Service by AWS CLI
+- The first time create task definition
+```ecs-cli compose create --cluster music```
+
+- The first time to create service 
+```
+  aws ecs create-service \
+  --cluster music \
+  --service-name music \
+  --task-definition music:123 \
+  --desired-count 1 \
+  --launch-type FARGATE \
+  --network-configuration "awsvpcConfiguration={subnets=[subnet-09404f0b49797d74e, subnet-051007b1fde1ea43b], securityGroups=[sg-0e84dd0849b3fc954], assignPublicIp=ENABLED}" \
+  --load-balancers "loadBalancerName=musicnew, containerName=nginx, containerPort=80"
+```
+
+- Update Service each time push to gitlab
+```
+  aws ecs update-service \
+  --cluster music \
+  --service music \
+  --desired-count 1 \
+  --force-new-deployment
+```

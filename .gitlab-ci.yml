@@ -1,28 +1,13 @@
 
 stages :
   - build
-  # - deploy 
+  - deploy 
 
-# variables :
-#   CLUSTER : "tutorial"
-#   PROJECT_NAME : "tutorial"
-#   CLUSTER_CONFIG : "tutorial"
-#   ECS_PROFILE : "tutorial-profile"
-  
-#   DOCKER_HUB_PASSWD : $DOCKER_HUB_PASSWD
-#   AWS_DEFAULT_REGION : $AWS_DEFAULT_REGION
-#   AWS_ACCESS_KEY_ID : $AWS_ACCESS_KEY_ID
-#   AWS_SECRET_ACCESS_KEY : $AWS_SECRET_ACCESS_KEY
-
-#   # ENV using by Django server
-#   AWS_STORAGE_BUCKET_NAME : $AWS_STORAGE_BUCKET_NAME
-#   ENV : $ENV
-#   STATIC_ROOT : $STATIC_ROOT
-#   DB_NAME : $DB_NAME
-#   DB_USER : $DB_USER
-#   DB_PASSWORD : $DB_PASSWORD
-#   DB_HOST : $DB_HOST
-
+variables :
+  CLUSTER : "music"
+  PROJECT_NAME : "music"
+  CLUSTER_CONFIG : "music-config"
+  ECS_PROFILE : "music-profile"
 
 # Build and push all Dockerfile (nginx, music_server) used in docker-compose to Docker Hub first.
 job_build_template :
@@ -52,6 +37,8 @@ job_build_template :
       --build-arg DB_PASSWORD=$DB_PASSWORD
       --build-arg DB_HOST=$DB_HOST
       --build-arg AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME
+      --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
       --no-cache .
 
     - docker tag music_server:latest lyoudr/music_public:music_1 
@@ -75,11 +62,12 @@ job_build_template :
 #     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
 #   script :
 #     - >-
-#       ecs-cli compose --project-name $PROJECT_NAME service up --create-log-groups 
-#       --cluster-config $CLUSTER_CONFIG --ecs-profile $ECS_PROFILE --force-deployment
-#     - >- 
-#       ecs-cli compose --project-name $PROJECT_NAME service ps --cluster-config $CLUSTER_CONFIG
-#       --ecs-profile $ECS_PROFILE
+#       aws ecs update-service
+#       --cluster music
+#       --service music
+#       --desired-count 1
+#       --force-new-deployment
+#     - aws ecs wait services-stable --services music --cluster music
 #   only :
 #    - ecs_fargate
 #   tags : 
