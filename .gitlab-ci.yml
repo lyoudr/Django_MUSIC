@@ -29,7 +29,7 @@ job_build_template :
   stage : build
   image : docker:19.03
   script :
-    - echo $DOCKER_USERNAME
+    - echo $DOCKER_USER
     - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     
     # build nginx
@@ -56,7 +56,7 @@ job_build_template :
 
     - docker tag music_server:latest lyoudr/music_public:music_1 
     - docker push lyoudr/music_public:music_1
-    - docker logout $DOCKER_HUB_PASSWD
+    - docker logout $DOCKER_PASSWORD
 
   only :
    - ecs_fargate
