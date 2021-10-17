@@ -51,24 +51,24 @@ job_build_template :
    - ann
 
 # Need to create cluster by hand , and use ecs-cli command to deploy docker-compose file to AWS ECS Fargate here.
-# job_deploy_template :
-#   stage : deploy
-#   image : 
-#     name : amazon/aws-cli
-#     entrypoint : [""]
-#   before_script :
-#     - aws configure set region $AWS_DEFAULT_REGION
-#     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-#     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-#   script :
-#     - >-
-#       aws ecs update-service
-#       --cluster music
-#       --service music
-#       --desired-count 1
-#       --force-new-deployment
-#     - aws ecs wait services-stable --services music --cluster music
-#   only :
-#    - ecs_fargate
-#   tags : 
-#    - ann
+job_deploy_template :
+  stage : deploy
+  image : 
+    name : amazon/aws-cli
+    entrypoint : [""]
+  before_script :
+    - aws configure set region $AWS_DEFAULT_REGION
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+  script :
+    - >-
+      aws ecs update-service
+      --cluster music
+      --service music
+      --desired-count 1
+      --force-new-deployment
+    - aws ecs wait services-stable --services music --cluster music
+  only :
+   - ecs_fargate
+  tags : 
+   - ann
