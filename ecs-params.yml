@@ -13,12 +13,6 @@ task_definition :
       transit_encryption: ENABLED
       access_point: fsap-0a6146e5b27eed85a
       iam: DISABLED
-    # - name: media
-    #   filesystem_id: fs-b0ab3290
-    #   root_directory: /
-    #   transit_encryption: ENABLED
-    #   access_point: fsap-08faa396533ff4bf8
-    #   iam: DISABLED
   services:
     postgres_db : 
       cpu_shares : 80

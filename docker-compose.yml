@@ -31,8 +31,8 @@ services :
     #     - DB_NAME=music
     #     - DB_USER=ann
     #     - DB_PASSWORD=GxXynskDj134yi7P
-    #     - AWS_ACCESS_KEY_ID=AKIAXSGGC3XSHHXH6JM5
-    #     - AWS_SECRET_ACCESS_KEY=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
+    #     - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    #     - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
     #     - AWS_STORAGE_BUCKET_NAME=lyoudrmusic
 
     image : lyoudr/music_public:music_1
