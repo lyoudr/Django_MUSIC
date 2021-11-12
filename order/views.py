@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from order.models import Order, OrderInfo
-from order.serializers import OrderInfoSerializer, ListOrderInfoSerializer
+from order.serializers import OrderSerializer, OrderInfoSerializer, ListOrderInfoSerializer
 
 from music.custom import CustomJsonResponse, CustomError
 from music.pagination import CustomNumberPagination
@@ -65,6 +65,11 @@ class OrderInfoView(GenericAPIView):
         request_body = openapi.Schema(
             type = openapi.TYPE_OBJECT,
             properties = {
+                'product_type_id': openapi.Schema(
+                    type = openapi.TYPE_INTEGER,
+                    description = '商品類別 KEY',
+                    example = 1
+                ),
                 'product_id': openapi.Schema(
                     type = openapi.TYPE_INTEGER,
                     description = '商品 KEY',
@@ -80,9 +85,31 @@ class OrderInfoView(GenericAPIView):
     )
     def post(self, request):
         with transaction.atomic():
-            order_info = request.data
-            order_info.update({'order_user_id': request.user.pk})
-            serializer = self.serializer_class(data = order_info)
+            data = request.data
+            data.update({'order_user': request.user})
+            
+            ### 1. Order
+            # find if there were products in user's cart. 
+            orders = Order.objects.filter(
+                status = '01',
+                order_user_id = request.user.pk,
+                product_type＿id = data.get('product_type_id')
+            )
+            # If there were, merge orders. else create new order.
+            if not orders.count() == 1:
+                order_data = {
+                    'status': '01',
+                    'order_no': None,
+                    'order_user': request.user,
+                    'product_type_id': data.get('product_type_id')
+                }
+                order = Order.objects.create(**order_data)
+                
+            ### 2. OrderInfo
+            data.update({
+                'order_id': orders[0].pk if orders.count() == 1 else order.pk
+            })
+            serializer = self.serializer_class(data = data)
             serializer.is_valid(raise_exception = True)
             serializer.save()
         return CustomJsonResponse(result_data = serializer.data, status = status.HTTP_200_OK)

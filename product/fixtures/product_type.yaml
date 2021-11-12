@@ -1,0 +1,12 @@
+- model: product.producttype
+  pk: 1
+  fields:
+    type_no: 'PS'
+- model: product.producttype
+  pk: 2
+  fields:
+    type_no: 'BK'
+- model: product.producttype
+  pk: 3
+  fields:
+    type_no: 'CL'
