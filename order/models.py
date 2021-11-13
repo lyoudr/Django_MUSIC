@@ -52,7 +52,6 @@ class Order(models.Model): # 訂單
         if self.order_no is None:
             unique_id = str(uuid.uuid4().hex.upper())
             self.order_no = f'{self.product_type.type_no}-{unique_id}-{self.order_user.pk}'
-            print('self.order_no is =>', self.order_no)
         super(Order, self).save(*args, **kwargs)
 
 class OrderInfo(models.Model):

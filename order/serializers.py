@@ -4,16 +4,28 @@ from rest_framework import serializers
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    
+    product_type_name = serializers.SerializerMethodField()
+
+    def get_product_type_name(self, instance):
+        return instance.product_type.get_type_no_display()
+
+    def to_representation(self, instance):
+        orders = super(OrderSerializer, self).to_representation(instance)
+        order_infos = instance.order_info_a.all()
+        if order_infos:
+            order_infos_serializer = OrderInfoSerializer(order_infos, many = True)
+            order_infos = order_infos_serializer.data
+            orders['order_infos'] = order_infos
+        return orders
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ('id', 'order_no', 'status', 'order_user', 'product_type', 'product_type_name', 'total_price')
 
 class OrderInfoSerializer(serializers.ModelSerializer):
     order_id = serializers.IntegerField()
     product_id = serializers.IntegerField()
     count = serializers.IntegerField()
-    price = serializers.IntegerField(read_only = True)
+    price = serializers.IntegerField(required=False)
     order_no = serializers.SerializerMethodField()
     order_info_id = serializers.SerializerMethodField()
     product_name = serializers.SerializerMethodField()

@@ -17,7 +17,13 @@ class BlogPostSerializer(serializers.ModelSerializer):
     music_sheet = serializers.FileField(required = False)
     created_time = serializers.DateTimeField(format = settings.DATE_TIME_FORMAT, read_only=True)
     product_id = serializers.SerializerMethodField()
-    
+    product_type_id = serializers.SerializerMethodField()
+
+    def get_product_type_id(self, instance):
+        if instance.product_b.all():
+            return instance.product_b.all()[0].product_type.pk
+        return None
+
     def get_product_id(self, instance):
         if instance.product_b.all():
             return instance.product_b.all()[0].pk
@@ -34,7 +40,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogPost
-        fields = ('id', 'user_id', 'blogclass_id', 'title', 'description', 'photo', 'music_sheet', 'created_time', 'permission', 'product_id')
+        fields = ('id', 'user_id', 'blogclass_id', 'title', 'description', 'photo', 'music_sheet', 'created_time', 'permission', 'product_id', 'product_type_id',)
 
 
 

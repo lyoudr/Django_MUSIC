@@ -1,7 +1,9 @@
 from django.db import transaction
+from django.db.models import F
 
 from order.models import Order, OrderInfo
 from order.serializers import OrderSerializer, OrderInfoSerializer, ListOrderInfoSerializer
+from product.models import Product
 
 from music.custom import CustomJsonResponse, CustomError
 from music.pagination import CustomNumberPagination
@@ -15,9 +17,9 @@ from drf_yasg import openapi
 
 
 class OrderInfoView(GenericAPIView):
-    model = OrderInfo
+    model = Order
     queryset = model.objects.all()
-    serializer_class = OrderInfoSerializer
+    serializer_class = OrderSerializer
     pagination_class = CustomNumberPagination
 
     @swagger_auto_schema(
@@ -44,17 +46,17 @@ class OrderInfoView(GenericAPIView):
         self.page_size = request.GET.get('page_size', None)
 
         cond = {
-            'order__isnull': True,
-            'order_user_id': request.user.pk,
+            'status' : '01',
+            'order_user': request.user,
         }
-        order_infos = self.get_queryset().filter(**cond)
-        if order_infos:
+        orders = self.get_queryset().filter(**cond)
+        if orders:
             if self.page:
-                pg_data = self.paginate_queryset(order_infos)
+                pg_data = self.paginate_queryset(orders)
                 serializer = self.serializer_class(pg_data, many = True)
                 data = self.get_paginated_response(serializer.data).data
             else:
-                serializer = self.serializer_class(order_infos, many = True)
+                serializer = self.serializer_class(orders, many = True)
                 data = serializer.data
             return CustomJsonResponse(result_data = data, status = status.HTTP_200_OK)
         return CustomJsonResponse(result_data = [], status = status.HTTP_200_OK)
@@ -86,68 +88,108 @@ class OrderInfoView(GenericAPIView):
     def post(self, request):
         with transaction.atomic():
             data = request.data
-            data.update({'order_user': request.user})
-            
-            ### 1. Order
+
+            ### 1. Count Price
+            products = Product.objects.filter(pk = data.get('product_id'))
+            if not products.count() == 1:
+                raise CustomError(
+                    return_code = 'product error',
+                    status_code = status.HTTP_400_BAD_REQUEST,
+                    return_message = 'can not find product'
+                )
+            price = products[0].price * data.get('count')
+
+            ### 2. Update or Create Order
             # find if there were products in user's cart. 
             orders = Order.objects.filter(
                 status = '01',
                 order_user_id = request.user.pk,
                 product_type＿id = data.get('product_type_id')
             )
-            # If there were, merge orders. else create new order.
+            # If there were orders, merge orders. else create new order.
             if not orders.count() == 1:
                 order_data = {
                     'status': '01',
                     'order_no': None,
                     'order_user': request.user,
-                    'product_type_id': data.get('product_type_id')
+                    'product_type_id': data.get('product_type_id'),
+                    'total_price': price,
                 }
                 order = Order.objects.create(**order_data)
-                
+            # update orders total_price
+            else:
+                order = orders[0]
+                order.total_price = order.total_price + price
+                order.save()
             ### 2. OrderInfo
             data.update({
-                'order_id': orders[0].pk if orders.count() == 1 else order.pk
+                'order_user': request.user,
+                'order_id': order.pk,
             })
-            serializer = self.serializer_class(data = data)
+            # If there were order_infos in the same order with same product_id, merge order_infos
+            order_infos = OrderInfo.objects.filter(**{
+                k:v for k, v in data.items() if k in ('order_id', 'order_user', 'product_id')
+            })
+            if order_infos.count() == 1:
+                serializer = OrderInfoSerializer(
+                    order_infos[0], 
+                    data = {
+                        'order_user': request.user,
+                        'order_id': order.pk,
+                        'count': order_infos[0].count + data.get('count'),
+                        'price': order_infos[0].price + price 
+                    },
+                    partial = True,
+                )
+            else:
+                serializer = OrderInfoSerializer(data = data)
             serializer.is_valid(raise_exception = True)
             serializer.save()
-        return CustomJsonResponse(result_data = serializer.data, status = status.HTTP_200_OK)
+            data = serializer.data
+        return CustomJsonResponse(result_data = data, status = status.HTTP_200_OK)
 
 
 class OrderInfoDetailView(GenericAPIView):
     model = OrderInfo
     queryset = model.objects.all()
     serializer_class = OrderInfoSerializer
+    pagination_class = CustomNumberPagination
 
     @swagger_auto_schema(
         operation_summary = 'order-03-delete 從購物車移除商品'
     )
     def delete(self, request, id):
+        self.page = request.GET.get('page', None)
+        self.page_size = request.GET.get('page_size', None)
         # 1. check product id is in database
+        with transaction.atomic():
+            # delete
+            try :
+                order_info = self.queryset.get(pk = id)
+                order = order_info.order
+                order_info.delete()
+                if order.order_info_a.count() == 0:
+                    order.delete()
+            except OrderInfo.DoesNotExist:
+                raise CustomError(
+                    return_code = 'order-03-delete_not_found',
+                    return_message = f'order_info_id {id} is not in cart',
+                    status_code = status.HTTP_404_NOT_FOUND,
+                )
         cond = {
-            'order__isnull': True,
-            'order_user_id': request.user.pk,
+            'status' : '01',
+            'order_user': request.user,
         }
-
-        order_infos = self.get_queryset().filter(**cond)
-        if order_infos:
-            with transaction.atomic():
-                # delete
-                try :
-                    order_info = order_infos.get(pk = id)
-                    order_info.delete()
-                except OrderInfo.DoesNotExist:
-                    raise CustomError(
-                        return_code = 'order-03-delete_not_found',
-                        return_message = f'order_info_id {id} is not in cart',
-                        status_code = status.HTTP_404_NOT_FOUND,
-                    )
-                # return remaining orders
-                order_infos = self.get_queryset().filter(**cond)
-                serializer = self.serializer_class(order_infos, many = True)
-                resp = serializer.data
-                return CustomJsonResponse(result_data = resp, status = status.HTTP_200_OK)
+        orders = Order.objects.filter(**cond)
+        if orders:
+            if self.page:
+                pg_data = self.paginate_queryset(orders)
+                serializer = OrderSerializer(pg_data, many = True)
+                data = self.get_paginated_response(serializer.data).data
+            else:
+                serializer = OrderSerializer(orders, many = True)
+                data = serializer.data
+            return CustomJsonResponse(result_data = data, status = status.HTTP_200_OK)
         return CustomJsonResponse(result_data = [], status = status.HTTP_200_OK)
             
             
