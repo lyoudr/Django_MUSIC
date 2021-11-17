@@ -233,3 +233,13 @@ ecs-cli compose --project-name music service scale 2 --cluster-config music --ec
   --desired-count 1 \
   --force-new-deployment
 ```
+
+### 6. Turn On Auto Scaling on service
+1. Target tracking scaling policies
+With target tracking scaling policies, you select a metric and set a target value. 
+Amazon ECS Service Auto Scaling creates and manages the CloudWatch alarms that trigger the scaling policy and calculates the scaling adjustment based on the metric and the target value
+
+2. Step scaling policies
+With step scaling policies, you create and manage the CloudWatch alarms that trigger the scaling process. 
+If the target tracking alarms don't work for your use case, you can use step scaling.
+
