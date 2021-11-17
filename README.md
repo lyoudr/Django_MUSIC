@@ -197,8 +197,21 @@ ecs-cli compose --project-name music service scale 2 --cluster-config music --ec
 
 
 ### 5. Create ECS Service by AWS CLI
+- The first time to create a cluster
+```
+  aws ecs create-cluster \
+      --cluster-name music \
+      --capacity-providers FARGATE
+```
 - The first time create task definition
-```ecs-cli compose create --cluster music```
+```
+  ecs-cli compose \
+    --file docker-compose.yml \
+    --ecs-params ecs-params.yml \
+    --region ap-northeast-1 \
+    create \
+    --launch-type FARGATE
+```
 
 - The first time to create service 
 ```

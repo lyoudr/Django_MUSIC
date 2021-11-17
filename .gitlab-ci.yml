@@ -46,7 +46,7 @@ job_build_template :
     - docker logout $DOCKER_PASSWORD
 
   only :
-   - other
+   - main
   tags : 
    - ann
 
@@ -69,6 +69,6 @@ job_deploy_template :
       --force-new-deployment
     - aws ecs wait services-stable --services music --cluster music
   only :
-   - other
+   - main
   tags : 
    - ann
