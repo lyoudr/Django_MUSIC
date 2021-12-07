@@ -8,3 +8,4 @@ __pycache__
 *.env
 docker/nginx/music
 music_storage
+.vscode/

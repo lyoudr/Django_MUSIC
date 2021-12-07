@@ -185,7 +185,7 @@ ecs-cli compose --project-name music service up --create-log-groups --cluster-co
 
 - Deploy compose file with Elastic Load Balancer (application load balancer) created before , --target-group-arn (enter the target group arn in this load balancer)
 ```
-ecs-cli compose --project-name music service up --cluster-config music --ecs-profile music --target-group-arn arn:aws:elasticloadbalancing:ap-northeast-1:520106466788:targetgroup/music/302aa40515d42364 --container-name nginx --container-port 80
+ecs-cli compose --project-name music service up --cluster-config music --ecs-profile music --target-group-arn arn:aws:elasticloadbalancing:ap-northeast-1:520106466788:targetgroup/musicnt/48920ad6375655db --container-name nginx --container-port 80
 ```
 
 - Scale the Tasks on the Cluster
@@ -243,3 +243,6 @@ Amazon ECS Service Auto Scaling creates and manages the CloudWatch alarms that t
 With step scaling policies, you create and manage the CloudWatch alarms that trigger the scaling process. 
 If the target tracking alarms don't work for your use case, you can use step scaling.
 
+### 7. RDS Scaling
+1. You can scale vertically to address the growing demands of an application that uses a roughly equal number of reads and writes.
+2. You can scale horizontally for read-heavy applications.
