@@ -119,7 +119,7 @@ run_params:
 ## Create Cluster , Deploy task to Elastic Container Service (ECS)
 
 This tutorial shows you how to set up a cluster and deploy a task using the EC2 launch type.
-
+- Remember that ecs config file and credentials are stored in ~/.ecs/config and ~/.ecs/credentials
 ### 1. Create the Task Execution IAM Role
 - Create a file namme "task-execution-assume-role.json" with the following contents:
 ```
@@ -151,11 +151,11 @@ aws iam --region ap-northeast-1 attach-role-policy --role-name ecsTaskExecutionR
 - [Install ecs-cli](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html)
 - Create cluster configuration, which defines the AWS region to use, resource createtion prefixes, nd the cluster name to use with the Amazon ECS CLI:
 ```
-ecs-cli configure --cluster music --default-launch-type FARGATE --config-name music-config --region ap-northeast-1
+ecs-cli configure --cluster music --default-launch-type FARGATE --config-name music --region ap-northeast-1
 ```
 - Create a profile using your access key and secret key
 ```
-ecs-cli configure profile --access-key AWS_ACCESS_KEY_ID --secret-key AWS_SECRET_ACCESS_KEY --profile-name music-profile
+ecs-cli configure profile --access-key AWS_ACCESS_KEY_ID --secret-key AWS_SECRET_ACCESS_KEY --profile-name music
 ```
 
 ### 3. Create Cluster and Configure the Security Group
@@ -163,7 +163,7 @@ ecs-cli configure profile --access-key AWS_ACCESS_KEY_ID --secret-key AWS_SECRET
 - Because you specified Fargate as your default launch type in the cluster configuration, this command creates an empty cluster and a VPC configured with two public subnets.
 
 ```
-ecs-cli up --cluster-config music-config --ecs-profile music-profile
+ecs-cli up --cluster-config music --ecs-profile music
 ```
 The output of this command contains the VPC and subnet IDs that are created. Take note of these IDs as they are used later.
 
@@ -180,7 +180,7 @@ aws ec2 authorize-security-group-ingress --group-id security_group_id --protocol
 ### 4. Deploy the Compose File to a Cluster
 - After you create the compose file, you can deploy it to your cluster with ecs-cli compose service up. By default, the command looks for files called **docker-compose.yml** and **ecs-params.yml** in the current directory
 ```
-ecs-cli compose --project-name music service up --create-log-groups --cluster-config music-config --ecs-profile music-profile
+ecs-cli compose --project-name music service up --create-log-groups --cluster-config music --ecs-profile music
 ```
 
 - Deploy compose file with Elastic Load Balancer (application load balancer) created before , --target-group-arn (enter the target group arn in this load balancer)
@@ -209,6 +209,7 @@ ecs-cli compose --project-name music service scale 2 --cluster-config music --ec
     --file docker-compose.yml \
     --ecs-params ecs-params.yml \
     --region ap-northeast-1 \
+    --task-role-arn arn:aws:iam::520106466788:role/ecsTaskExecutionRole \
     create \
     --launch-type FARGATE
 ```
