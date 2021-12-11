@@ -1,7 +1,7 @@
 ## Use Docker Compose to define containers
 
 Architecture diagram
-![alt text](https://gitlab.com/lyoudr/music_server/-/blob/ecs/ecs_architecture.png)
+![alt text](https://github.com/lyoudr/Django_MUSIC/blob/main/project_architecture.drawio.png)
 
 ### 1. Write your docker-copmose.yml file
 
