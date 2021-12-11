@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db.models import Q
 from django.db import transaction
+from django.contrib.auth import authenticate
 
 from music.pagination import CustomNumberPagination
 
@@ -18,7 +20,6 @@ from blog.serializers import (
 
 from music.utils.custom_exception import CustomError
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
@@ -32,6 +33,7 @@ from rest_framework.parsers import (
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
  
+import jwt
 
 class APICustomError(Exception): pass
 
@@ -43,7 +45,7 @@ class BlogClassView(GenericAPIView):
     permission_classes = [AllowAny]
 
     @swagger_auto_schema(
-        operation_summary = 'get all blog class',
+        operation_summary = 'blog-01-get 取得貼文分類',
         tags = ['blog'],
         manual_parameters = [
             openapi.Parameter(
@@ -96,7 +98,7 @@ class BlogPostView(GenericAPIView):
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
-        operation_summary = 'Get blog post about music',
+        operation_summary = 'blog-02-get 根據貼文分類取得所有貼文',
         tags = ['blog'],
         manual_parameters = [
             openapi.Parameter(
@@ -148,10 +150,38 @@ class BlogPostDetailView(GenericAPIView):
     serializer_class = BlogPostSerializer
     permission_classes = (AllowAny,)
 
+    @swagger_auto_schema(
+        operation_summary = 'blog-03-get 取得每則貼文詳細內容',
+        tags = ['blog']
+    )
     def get(self, request, pk):
+        """
+            if access token is presented in header, authenticate user .
+            else not authenticate user
+        """
+        ### Authorize and get user id 
+        user_id = None
+        try :
+            ac_token = request.headers.get('Authorization', None)
+            if ac_token:
+                payload = jwt.decode(ac_token.split(' ')[1], settings.SECRET_KEY, algorithms=["HS256"])
+                user_id = payload.get('user_id')
+        except:
+            raise CustomError(
+                return_message = 'This user is unauthorized', 
+                return_code = 'This user is unauthorized', 
+                status_code = status.HTTP_401_UNAUTHORIZED
+            )
+
         try :
             post = self.queryset.get(pk = pk, permission = 2)
-            serializer = self.serializer_class(post, context = {'detail': True})
+            serializer = self.serializer_class(
+                post, 
+                context = {
+                    'detail': True, 
+                    'user_id': user_id,
+                }
+            )
             return Response(data = serializer.data, status = status.HTTP_200_OK)
         except BlogPost.DoesNotExist:
             raise CustomError(
@@ -169,7 +199,7 @@ class BlogSearchView(GenericAPIView):
     permission_classes = [AllowAny]
 
     @swagger_auto_schema(
-        operation_summary = 'keyword search blog post',
+        operation_summary = 'blog-04 搜尋貼文',
         tags = ['blog'],
         manual_parameters = [
             openapi.Parameter(
@@ -187,12 +217,14 @@ class BlogSearchView(GenericAPIView):
             Q(title__icontains = keyword) | 
             (Q(blog_section__post_type = 'text') & Q(blog_section__text__icontains = keyword))
         ).order_by('created_time')
-        print('posts is =>', posts)
         pag_posts = self.paginate_queryset(posts)
         serializer = self.serializer_class(pag_posts, many = True)
         data = self.get_paginated_response(serializer.data).data
 
         return Response(data = data, status = status.HTTP_200_OK)
+
+
+
 
 
 ### Manage View
@@ -231,7 +263,6 @@ class BlogPostUserView(GenericAPIView):
     )
     def get(self, request):
         user_id = request.user.pk
-        
         self.page = request.GET.get('page')
         self.page_size = request.GET.get('page_size')
 
@@ -242,7 +273,7 @@ class BlogPostUserView(GenericAPIView):
             data = self.get_paginated_response(serializer.data).data
             return Response(data = data, status = status.HTTP_200_OK)
         else:
-            return Response(data = 'not found', status = status.HTTP_404_NOT_FOUND)
+            return Response(data = [], status = status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(
         operation_summary = 'Create blog post about music',
@@ -406,12 +437,15 @@ class BlogPostUserDetailView(APIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
 
+    @swagger_auto_schema(
+        operation_summary = 'Get blog post of user',
+        tags = ['blog manage'],
+    )
     def get(self, request, pk):
         user_id = request.user.pk
         try :
             post = self.queryset.get(user__pk = user_id, pk = pk)
             serializer = self.serializer_class(post, context = {'detail': True})
-            print('serializer.data is =>', serializer.data)
             return Response(data = serializer.data, status = status.HTTP_200_OK)
         except BlogPost.DoesNotExist:
             raise CustomError(

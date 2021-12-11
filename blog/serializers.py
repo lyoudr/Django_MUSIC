@@ -16,22 +16,20 @@ class BlogPostSerializer(serializers.ModelSerializer):
     blogclass_id = serializers.IntegerField()
     music_sheet = serializers.FileField(required = False)
     created_time = serializers.DateTimeField(format = settings.DATE_TIME_FORMAT, read_only=True)
-    product_id = serializers.SerializerMethodField()
-    product_type_id = serializers.SerializerMethodField()
-
-    def get_product_type_id(self, instance):
-        if instance.product_b.all():
-            return instance.product_b.all()[0].product_type.pk
-        return None
-
-    def get_product_id(self, instance):
-        if instance.product_b.all():
-            return instance.product_b.all()[0].pk
-        return None
 
     def to_representation(self, instance):
         blog_post = super(BlogPostSerializer, self).to_representation(instance)
 
+        # products
+        products = instance.product_b.all()
+        user_id = self.context.get('user_id', None)
+        if products:
+            is_show = products[0].owner_id != user_id and user_id
+            blog_post.update({
+                'product_id': products[0].pk if is_show else None,
+                'product_type_id': products[0].product_type.pk if is_show else None,
+            })
+                
         if self.context.get('detail'):
             blog_section = BlogSectionSerializer(instance.blog_section.all().order_by('order'), many = True).data
             blog_post['blog_section'] = blog_section
@@ -40,7 +38,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogPost
-        fields = ('id', 'user_id', 'blogclass_id', 'title', 'description', 'photo', 'music_sheet', 'created_time', 'permission', 'product_id', 'product_type_id',)
+        fields = ('id', 'user_id', 'blogclass_id', 'title', 'description', 'photo', 'music_sheet', 'created_time', 'permission')
 
 
 
@@ -52,17 +50,22 @@ class BlogSectionSerializer(serializers.ModelSerializer):
     photo_id = serializers.IntegerField(allow_null = True)
     video = serializers.CharField(allow_null = True)
     photo = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     def get_photo(self, instance):
-        if instance.photo:
+        print('instance.pk is =>', instance.pk)
+        if instance.photo_id and instance.post_type == 'photo':
             return instance.photo.image.url
         return None
 
+    def get_name(self, instance):
+        if instance.photo_id and instance.post_type == 'photo':
+            return instance.photo.image.name.split('/')[1]
+        return None
+
     def update(self, instance, data, used_photos):
-        print('data is =>', data)
-        print('used_photo is =>', used_photos)
+        print('used_photos is =>', used_photos)
         if instance.post_type == 'photo' and instance.photo_id not in used_photos:
-            print('instance.photo is =>', instance.photo)
             instance.photo.delete()
             instance.photo.save()
         instance.__dict__.update(**data)
@@ -72,14 +75,22 @@ class BlogSectionSerializer(serializers.ModelSerializer):
         return instance
     class Meta:
         model = BlogSection
-        fields = ('id', 'blogpost_id', 'order', 'post_type', 'text', 'photo_id', 'video', 'photo')
+        fields = ('id', 'blogpost_id', 'order', 'post_type', 'text', 'photo_id', 'video', 'photo', 'name')
 
 
 class ListBlogSectionSerializer(serializers.ListSerializer):
     child = BlogSectionSerializer()
 
     def update(self, instance, data):
-        used_photos = [value for sec in data for key, value in sec.items() if key == 'photo']
+        used_photos = []
+        for sec in data:
+            for k, v in sec.items():
+                print('k is =>', k)
+                print('v is =>', v)
+                if k == 'photo_id' and v:
+                    used_photos.append(v)
+
+        print('used_photos is =>', used_photos)
         # Map for id => instance and id => data item.
         db_section = {section.order: section for section in instance}
         data_section = {section.get('order'): section for section in data}

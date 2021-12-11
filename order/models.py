@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from product.models import ProductType, Product
 
 import uuid
+
 class PayInfo(models.Model):
     class Meta:
         db_table = 'PAY_INFO'
@@ -13,12 +14,22 @@ class PayInfo(models.Model):
         ('2', 'MASTER'),
         ('3', 'CREDIT')
     )
-
+    BANK_CHOICES = (
+        ('004', '台灣銀行'),
+        ('005', '台灣土地銀行'),
+        ('006', '合作金庫銀行'),
+        ('007', '第一商業銀行'),
+        ('008', '華南商業銀行'),
+        ('009', '彰化商業銀行'),
+        ('010', '花旗銀行')
+    )
     user = models.ForeignKey(User, on_delete = models.CASCADE, null = True, related_name = 'pay_info')
-    bank_name = models.CharField(max_length = 50)
-    bank_no = models.CharField(max_length = 50)
+    bank = models.CharField(max_length = 50, choices = BANK_CHOICES)
     card_no = models.CharField(max_length = 50)
+    valid_no = models.CharField(max_length = 4)
     card_type = models.CharField(max_length = 1, choices = CARD_TYPE_CHOICES)
+    created_time = models.DateTimeField(auto_now_add = True)
+    updated_time = models.DateTimeField(auto_now = True)
 
     def __str__(self):
         return f'{self.user.username}-{self.bank_name}'

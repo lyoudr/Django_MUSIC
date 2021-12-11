@@ -1,4 +1,4 @@
-from order.models import Order, OrderInfo
+from order.models import Order, OrderInfo, PayInfo
 
 from rest_framework import serializers
 
@@ -22,6 +22,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'order_no', 'status', 'order_user', 'product_type', 'product_type_name', 'total_price')
 
 class OrderInfoSerializer(serializers.ModelSerializer):
+    order_user_id = serializers.IntegerField()
     order_id = serializers.IntegerField()
     product_id = serializers.IntegerField()
     count = serializers.IntegerField()
@@ -49,9 +50,32 @@ class OrderInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderInfo
-        fields = ('order_id', 'order_no', 'order_info_id', 'product_id', 'count', 'price', 'product_name', 'product_no', 'product_img',)
+        fields = ('order_user_id', 'order_id', 'order_no', 'order_info_id', 'product_id', 'count', 'price', 'product_name', 'product_no', 'product_img',)
 
 
 class ListOrderInfoSerializer(serializers.ListSerializer):
     child = OrderInfoSerializer()
 
+
+class PayInfoSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+    bank = serializers.CharField(max_length = 4)
+    valid_no = serializers.CharField(max_length = 4)
+    card_type = serializers.CharField(max_length = 1)
+    card_no = serializers.SerializerMethodField()
+    bank_name = serializers.SerializerMethodField()
+    card_name = serializers.SerializerMethodField()
+
+    def get_card_no(self, instance):
+        card_no = instance.card_no
+        encrypted_card_no = card_no.replace(card_no[:11], '*'*12)
+        return encrypted_card_no
+
+    def get_bank_name(self, instance):
+        return instance.get_bank_display()
+    
+    def get_card_name(self, instance):
+        return instance.get_card_type_display()
+    class Meta:
+        model = PayInfo
+        fields = ('id', 'user_id', 'bank', 'bank_name', 'card_no', 'valid_no', 'card_type', 'card_name')
