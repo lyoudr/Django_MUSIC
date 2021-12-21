@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders', # allow different origin request
+    'django_grpc_framework',
+    'rest_framework',
     # swagger
     'drf_yasg',
     # storage
@@ -65,7 +67,7 @@ INSTALLED_APPS = [
     'product',
     'order',
     'sysdata',
-    'rest_framework',
+    'analysis',
     # extension
     'django_extensions',
 

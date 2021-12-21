@@ -1,0 +1,27 @@
+- model: product.product
+  pk: 1
+  fields:
+    product_name: 'Business'
+    description: 'A business report is a collection of data and analyses that helps make relevant information easily accessible to a company.'
+    price: 400
+    blogpost_id: 1
+    owner_id: 1
+    product_type_id: 1
+- model: product.product
+  pk: 2
+  fields:
+    product_name: 'Nier Automata'
+    description: 'NieR: Automata tells the story of androids 2B, 9S and A2 and their battle to reclaim the machine-driven dystopia overrun by powerful'
+    price: 600
+    blogpost_id: 2
+    owner_id: 2
+    product_type_id: 1
+- model: product.product
+  pk: 3
+  fields:
+    product_name: 'Attack On Titan'
+    description: 'The plot of Attack on Titan centers on a civilization inside three walls, the last location where humans still live.'
+    price: 700
+    blogpost_id: 4
+    owner_id: 1
+    product_type_id: 1

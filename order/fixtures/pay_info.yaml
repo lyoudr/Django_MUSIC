@@ -1,0 +1,20 @@
+- model: order.payinfo
+  pk: 1
+  fields:
+    user: 1
+    bank: '004'
+    card_no: '1234567890120304'
+    valid_no: '123'
+    card_type: '1'
+    created_time: 2021-11-25 01:15:51
+    updated_time: 2021-11-25 01:15:51
+- model: order.payinfo
+  pk: 2
+  fields:
+    user: 2
+    bank: '006'
+    card_no: '1234274890120304'
+    valid_no: '456'
+    card_type: '2'
+    created_time: 2021-11-25 01:15:51
+    updated_time: 2021-11-25 01:15:51

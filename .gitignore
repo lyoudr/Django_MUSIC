@@ -10,3 +10,4 @@ docker/nginx/music
 music_storage
 .vscode/
 *.local.yml
+static-root/

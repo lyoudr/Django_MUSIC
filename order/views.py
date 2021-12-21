@@ -185,7 +185,6 @@ class OrderView(GenericAPIView):
     def patch(self, request):
         data = request.data
         data['status'] = '02'
-        print('data is =>', data)
         orders = self.queryset.filter(status = '01', order_user_id = request.user.pk)
         if orders:
             for order in orders:

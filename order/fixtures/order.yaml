@@ -1,0 +1,22 @@
+- model: order.order
+  pk: 1
+  fields:
+    order_no: 'BFDFJ12345'
+    status: '01'
+    ship_addr: '台北市大安區'
+    total_price: 1200
+    created_time: 2021-11-25 15:18:49
+    order_user_id: 1
+    pay_info_id: 1
+    product_type_id: 1
+- model: order.order
+  pk: 2
+  fields:
+    order_no: 'BFDFJ12346'
+    status: '01'
+    ship_addr: '台北市中正區'
+    total_price: 800
+    created_time: 2021-11-25 15:18:49
+    order_user_id: 2
+    pay_info_id: 2
+    product_type_id: 1

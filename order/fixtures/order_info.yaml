@@ -1,0 +1,22 @@
+- model: order.orderinfo
+  pk: 1
+  fields:
+    count: 2
+    price: 1200
+    order_id: 1
+    product_id: 2
+    order_user_id: 1
+    created_time: 2021-11-25 15:18:49
+    updated_time: 2021-11-25 15:18:49
+    sell_user_id: 2
+- model: order.orderinfo
+  pk: 2
+  fields:
+    count: 2
+    price: 800
+    order_id: 2
+    product_id: 1
+    order_user_id: 2
+    created_time: 2021-11-25 15:18:49
+    updated_time: 2021-11-25 15:18:49
+    sell_user_id: 1
