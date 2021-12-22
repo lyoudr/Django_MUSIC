@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from analysis.grpc import sales_pb2 as sales__pb2
+import sales_pb2 as sales__pb2
 
 
 class SalesReportStub(object):
@@ -19,12 +19,23 @@ class SalesReportStub(object):
                 request_serializer=sales__pb2.ProductRe.SerializeToString,
                 response_deserializer=sales__pb2.Product.FromString,
                 )
+        self.CreateFeedBack = channel.unary_unary(
+                '/sales.SalesReport/CreateFeedBack',
+                request_serializer=sales__pb2.FeedBack.SerializeToString,
+                response_deserializer=sales__pb2.FeedBack.FromString,
+                )
 
 
 class SalesReportServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def ListProduct(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateFeedBack(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -37,6 +48,11 @@ def add_SalesReportServicer_to_server(servicer, server):
                     servicer.ListProduct,
                     request_deserializer=sales__pb2.ProductRe.FromString,
                     response_serializer=sales__pb2.Product.SerializeToString,
+            ),
+            'CreateFeedBack': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateFeedBack,
+                    request_deserializer=sales__pb2.FeedBack.FromString,
+                    response_serializer=sales__pb2.FeedBack.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +78,22 @@ class SalesReport(object):
         return grpc.experimental.unary_stream(request, target, '/sales.SalesReport/ListProduct',
             sales__pb2.ProductRe.SerializeToString,
             sales__pb2.Product.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateFeedBack(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/sales.SalesReport/CreateFeedBack',
+            sales__pb2.FeedBack.SerializeToString,
+            sales__pb2.FeedBack.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
