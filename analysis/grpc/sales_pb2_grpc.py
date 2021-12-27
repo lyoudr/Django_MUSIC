@@ -24,6 +24,11 @@ class SalesReportStub(object):
                 request_serializer=sales__pb2.FeedBack.SerializeToString,
                 response_deserializer=sales__pb2.FeedBack.FromString,
                 )
+        self.CreateKeyWord = channel.unary_unary(
+                '/sales.SalesReport/CreateKeyWord',
+                request_serializer=sales__pb2.KeyWord.SerializeToString,
+                response_deserializer=sales__pb2.KeyWord.FromString,
+                )
 
 
 class SalesReportServicer(object):
@@ -41,6 +46,12 @@ class SalesReportServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CreateKeyWord(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SalesReportServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +64,11 @@ def add_SalesReportServicer_to_server(servicer, server):
                     servicer.CreateFeedBack,
                     request_deserializer=sales__pb2.FeedBack.FromString,
                     response_serializer=sales__pb2.FeedBack.SerializeToString,
+            ),
+            'CreateKeyWord': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateKeyWord,
+                    request_deserializer=sales__pb2.KeyWord.FromString,
+                    response_serializer=sales__pb2.KeyWord.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -95,5 +111,22 @@ class SalesReport(object):
         return grpc.experimental.unary_unary(request, target, '/sales.SalesReport/CreateFeedBack',
             sales__pb2.FeedBack.SerializeToString,
             sales__pb2.FeedBack.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateKeyWord(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/sales.SalesReport/CreateKeyWord',
+            sales__pb2.KeyWord.SerializeToString,
+            sales__pb2.KeyWord.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

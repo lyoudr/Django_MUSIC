@@ -26,3 +26,10 @@ class GrpcClient:
             description = data.get('description')
         ))
         return feedback
+
+    def post_keyword(self, data, user_id):
+        keyword = self.stub.CreateKeyWord(sales_pb2.KeyWord(
+            user_id = user_id,
+            keyword = data.get('keyword')
+        ))
+        return keyword

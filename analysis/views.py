@@ -1,7 +1,7 @@
-from django.core import serializers
+from analysis.grpc.sales_pb2 import KeyWord
 from music.custom import CustomJsonResponse
 from analysis.grpc.client import GrpcClient
-from analysis.serializers import FeedBackSerializer
+from analysis.serializers import FeedBackSerializer, KeyWordSerializer
 
 from rest_framework.views import APIView
 from rest_framework import status
@@ -11,7 +11,6 @@ from drf_yasg import openapi
 
 
 class AnalysisView(APIView):
-
 
     @swagger_auto_schema(
         operation_summary = 'analysis-01-get 取得銷售統計資料',
@@ -57,7 +56,27 @@ class AnalysisView(APIView):
         return CustomJsonResponse(result_data = data, status = status.HTTP_200_OK)
 
 
+class KeyWordView(APIView):
 
-
-        
+    @swagger_auto_schema(
+        operation_summary = 'keyword-01-post 紀錄搜尋時的關鍵字',
+        request_body = openapi.Schema(
+            type = openapi.TYPE_OBJECT,
+            properties = {
+                'keyword': openapi.Schema(
+                    type = openapi.TYPE_STRING,
+                    description = 'keyword',
+                    example = 'book'
+                )
+            }
+        )
+    )
+    def post(self, request):
+        data = request.data
+        grpc_cl = GrpcClient()
+        keyword = grpc_cl.post_keyword(data, request.user.pk)
+        print('keyword is =>', keyword)
+        serializer = KeyWordSerializer(keyword)
+        data = serializer.data
+        return CustomJsonResponse(result_data = data, status = status.HTTP_200_OK)
 

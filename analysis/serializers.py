@@ -32,3 +32,12 @@ class FeedBackSerializer(proto_serializers.ProtoSerializer):
     class Meta:
         proto_class = sales_pb2.FeedBack
         fields = ['id', 'rank', 'user_id', 'product_type_id', 'description', 'product_type']
+
+
+class KeyWordSerializer(proto_serializers.ProtoSerializer):
+    id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
+    keyword = serializers.CharField()
+    class Meta:
+        proto_class = sales_pb2.KeyWord
+        fields = ('id', 'user_id', 'keyword')

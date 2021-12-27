@@ -11,6 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -19,8 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0bsales.proto\x12\x05sales\"\x0b\n\tProductRe\"l\n\x07Product\x12\x14\n\x0cproduct_type\x18\x01 \x01(\t\x12\x14\n\x0cproduct_name\x18\x02 \x01(\t\x12\x12\n\nproduct_no\x18\x03 \x01(\t\x12\x13\n\x0btotal_sales\x18\x04 \x01(\x05\x12\x0c\n\x04rank\x18\x05 \x01(\x05\"c\n\x08\x46\x65\x65\x64\x42\x61\x63k\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04rank\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\x05\x12\x17\n\x0fproduct_type_id\x18\x04 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t2x\n\x0bSalesReport\x12\x33\n\x0bListProduct\x12\x10.sales.ProductRe\x1a\x0e.sales.Product\"\x00\x30\x01\x12\x34\n\x0e\x43reateFeedBack\x12\x0f.sales.FeedBack\x1a\x0f.sales.FeedBack\"\x00\x62\x06proto3'
-)
+  serialized_pb=b'\n\x0bsales.proto\x12\x05sales\x1a\x1fgoogle/protobuf/timestamp.proto\"\x0b\n\tProductRe\"l\n\x07Product\x12\x14\n\x0cproduct_type\x18\x01 \x01(\t\x12\x14\n\x0cproduct_name\x18\x02 \x01(\t\x12\x12\n\nproduct_no\x18\x03 \x01(\t\x12\x13\n\x0btotal_sales\x18\x04 \x01(\x05\x12\x0c\n\x04rank\x18\x05 \x01(\x05\"c\n\x08\x46\x65\x65\x64\x42\x61\x63k\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04rank\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\x05\x12\x17\n\x0fproduct_type_id\x18\x04 \x01(\x05\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\"i\n\x07KeyWord\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0f\n\x07user_id\x18\x02 \x01(\x05\x12\x0f\n\x07keyword\x18\x03 \x01(\t\x12\x30\n\x0c\x63reated_time\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp2\xab\x01\n\x0bSalesReport\x12\x33\n\x0bListProduct\x12\x10.sales.ProductRe\x1a\x0e.sales.Product\"\x00\x30\x01\x12\x34\n\x0e\x43reateFeedBack\x12\x0f.sales.FeedBack\x1a\x0f.sales.FeedBack\"\x00\x12\x31\n\rCreateKeyWord\x12\x0e.sales.KeyWord\x1a\x0e.sales.KeyWord\"\x00\x62\x06proto3'
+  ,
+  dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
 
 
@@ -45,8 +47,8 @@ _PRODUCTRE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=22,
-  serialized_end=33,
+  serialized_start=55,
+  serialized_end=66,
 )
 
 
@@ -105,8 +107,8 @@ _PRODUCT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=35,
-  serialized_end=143,
+  serialized_start=68,
+  serialized_end=176,
 )
 
 
@@ -165,13 +167,68 @@ _FEEDBACK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=145,
-  serialized_end=244,
+  serialized_start=178,
+  serialized_end=277,
 )
 
+
+_KEYWORD = _descriptor.Descriptor(
+  name='KeyWord',
+  full_name='sales.KeyWord',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='sales.KeyWord.id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='sales.KeyWord.user_id', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='keyword', full_name='sales.KeyWord.keyword', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created_time', full_name='sales.KeyWord.created_time', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=279,
+  serialized_end=384,
+)
+
+_KEYWORD.fields_by_name['created_time'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
 DESCRIPTOR.message_types_by_name['ProductRe'] = _PRODUCTRE
 DESCRIPTOR.message_types_by_name['Product'] = _PRODUCT
 DESCRIPTOR.message_types_by_name['FeedBack'] = _FEEDBACK
+DESCRIPTOR.message_types_by_name['KeyWord'] = _KEYWORD
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ProductRe = _reflection.GeneratedProtocolMessageType('ProductRe', (_message.Message,), {
@@ -195,6 +252,13 @@ FeedBack = _reflection.GeneratedProtocolMessageType('FeedBack', (_message.Messag
   })
 _sym_db.RegisterMessage(FeedBack)
 
+KeyWord = _reflection.GeneratedProtocolMessageType('KeyWord', (_message.Message,), {
+  'DESCRIPTOR' : _KEYWORD,
+  '__module__' : 'sales_pb2'
+  # @@protoc_insertion_point(class_scope:sales.KeyWord)
+  })
+_sym_db.RegisterMessage(KeyWord)
+
 
 
 _SALESREPORT = _descriptor.ServiceDescriptor(
@@ -204,8 +268,8 @@ _SALESREPORT = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=246,
-  serialized_end=366,
+  serialized_start=387,
+  serialized_end=558,
   methods=[
   _descriptor.MethodDescriptor(
     name='ListProduct',
@@ -224,6 +288,16 @@ _SALESREPORT = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_FEEDBACK,
     output_type=_FEEDBACK,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='CreateKeyWord',
+    full_name='sales.SalesReport.CreateKeyWord',
+    index=2,
+    containing_service=None,
+    input_type=_KEYWORD,
+    output_type=_KEYWORD,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
